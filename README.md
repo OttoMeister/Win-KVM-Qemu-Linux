@@ -4,7 +4,9 @@ Windows 10 and 11 on Linux using KVM and Qemu
 
 # Install Windows 11 auf KVM
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
-'''sudo mv ~/Downloads/Win11_23H2_English_x64v2.iso /var/lib/libvirt/images/win11.iso'''
+```bash
+sudo mv ~/Downloads/Win11_23H2_English_x64v2.iso /var/lib/libvirt/images/win11.iso
+```
 # Download drivers
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 sudo mv ./virtio-win.iso /var/lib/libvirt/images/
