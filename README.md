@@ -309,8 +309,8 @@ Also working:
 ```bash
 -nic user,id=nic0,smb=/home/user/Schreibtisch/Arbeit
 ```
-In windows:  <br>
-explorer: \\10.0.2.4\qemu   ---> Map network device... <br>
+In windows:  <br><br>
+explorer: \\10.0.2.4\qemu   ---> Map network device... <br><br>
 On Linux:  <br>
 ```bash
 sudo pluma /etc/samba/smb.conf 
