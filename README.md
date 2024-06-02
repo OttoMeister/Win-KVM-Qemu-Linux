@@ -1,8 +1,5 @@
 # Win-KVM-Qemu-Linux
-
-#### Windows 10 and 11 on Linux using KVM and Qemu
-
-
+Windows 10 and 11 on Linux using KVM and Qemu
 ### Install Windows 11 auf KVM
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
 ```bash
@@ -69,7 +66,7 @@ swtpm socket \
   -device usb-tablet \
   -global driver=cfi.pflash01,property=secure,value=on \
   -device virtio-net,netdev=vmnic \
-  -netdev user,id=vmnic,smb=/home/boss/Schreibtisch/Arbeit \
+  -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
   -vga qxl \
   -device virtio-serial-pci \
   -spice port=3001,disable-ticketing=on \
@@ -77,7 +74,69 @@ swtpm socket \
   -chardev spicevmc,id=spicechannel0,name=vdagent \
   -display spice-app
 ```
+### Install Windows 10 auf KVM
 
-
+#### Download image
+Download image from https://msdl.gravesoft.dev (Windows 10 22H2 v1 ,Build 19045.2965, US English, IsoX64 Download)
+```bash
+sudo mv ~/Downloads/Win10_22H2_English_x64v1.iso /var/lib/libvirt/images/win10.iso
+```
+#### Download drivers
+```bash
+wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
+sudo mv ./virtio-win.iso /var/lib/libvirt/images/
+```
+#### Make image
+```bash
+sudo qemu-img create -f qcow2 /var/lib/libvirt/images/win10.qcow2 80G 
+sudo chmod a+w /var/lib/libvirt/images/win10.qcow2
+```
+#### Install Windows 10 Pro N 
+```bash
+/usr/bin/qemu-system-x86_64 \
+  -cpu host \
+  -boot d \
+  -cdrom /var/lib/libvirt/images/win10.iso \
+  -enable-kvm \
+  -m 4G \
+  -drive file=/var/lib/libvirt/images/win10.qcow2,format=qcow2 \
+  -drive if=ide,index=3,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
+  -device virtio-tablet,wheel-axis=true \
+  -net none
+```
+Press Enter at Boot, no Key, Win10ProN, Custom: Install Windows only, load Driver E:\viostor\w10\amd64, unhide, no internet, user boss, pwd boss, no Spy, no Cortana.<br>
+After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
+#### shutdown and reboot using this command:
+```bash
+/usr/bin/qemu-system-x86_64 \
+  -enable-kvm \
+  -m 8G \
+  -smp 6,sockets=1,cores=3,threads=2 \
+  -cpu host \
+  -drive file=/var/lib/libvirt/images/win10.qcow2 \
+  -device virtio-tablet,wheel-axis=true \
+  -vga qxl \
+  -device virtio-serial-pci \
+  -spice port=3001,disable-ticketing=on \
+  -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
+  -chardev spicevmc,id=spicechannel0,name=vdagent \
+  -display spice-app \
+  -device virtio-net,netdev=vmnic \
+  -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
+```
+# Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter 
+# Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen:
+http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab
+# Download Drivers and Tools on Linux and use drag and dropand to install:
+# Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip"
+# Usefull Tools
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe
+https://download.sysinternals.com/files/AutoLogon.zip
+https://github.com/hellzerg/optimizer/releases/latest
+https://github.com/ionuttbara/one-drive-uninstaller
+https://www.7-zip.org/download.html
+https://download.sysinternals.com/files/SDelete.zip
+https://github.com/Open-Shell/Open-Shell-Menu/releases/latest
+https://www.mozilla.org/en-US/firefox/all/#product-desktop-release
 
 
