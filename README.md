@@ -43,10 +43,10 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 -global driver=cfi.pflash01,property=secure,value=on
 ```
 Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
-Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup.
-Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.
+Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup. <br>
+Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.  <br>
 Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
-Now start it like this:
+Now start it like this: <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
