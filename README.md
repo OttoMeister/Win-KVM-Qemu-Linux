@@ -3,7 +3,7 @@
 #### Windows 10 and 11 on Linux using KVM and Qemu
 
 
-## Install Windows 11 auf KVM
+### Install Windows 11 auf KVM
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
 ```bash
 sudo mv ~/Downloads/Win11_23H2_English_x64v2.iso /var/lib/libvirt/images/win11.iso
@@ -42,11 +42,12 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 -netdev user,id=net0 -device e1000,netdev=net0 \
 -global driver=cfi.pflash01,property=secure,value=on
 ```
-#### Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
-#Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup.
-#Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.
-########### Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
-########### Now start it like this:
+Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
+Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup.
+Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.
+Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
+Now start it like this:
+```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
   --tpmstate dir=/tmp/emulated_tpm \
@@ -75,7 +76,7 @@ swtpm socket \
   -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
   -chardev spicevmc,id=spicechannel0,name=vdagent \
   -display spice-app
-
+```
 
 
 
