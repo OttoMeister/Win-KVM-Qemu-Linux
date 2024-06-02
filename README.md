@@ -20,8 +20,8 @@ sudo chmod a+w /var/lib/libvirt/images/win11.qcow2
 sudo killall swtpm
 sudo rm -rf /tmp/emulated_tpm
 ```
-```bash
 #### Install Windows 11 Pro N 
+```bash
 mkdir -p /tmp/emulated_tpm
 swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock --daemon
 /usr/bin/qemu-system-x86_64 \
