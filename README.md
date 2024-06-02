@@ -153,7 +153,7 @@ https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
 ### Move from VMware to KVM
 Uninstall vmware utils using VMware <br>
 Disable Hibernate in Windows 10: <br>
-https://www.tenforums.com/tutorials/2859-enable-disable-hibernate-windows-10-a.html <br 
+https://www.tenforums.com/tutorials/2859-enable-disable-hibernate-windows-10-a.html <br> 
 Disable Sleep Mode In Windows 10: <br>
 https://www.intowindows.com/how-to-enable-or-disable-sleep-mode-in-windows-10 <br>
 Turn Off Fast Startup in Windows 10: <br>
