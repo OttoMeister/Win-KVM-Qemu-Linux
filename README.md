@@ -302,11 +302,12 @@ cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/boss/Schreibtisch/Arbeit
 ```
-also working:
+Also working:
 ```bash
 -nic user,id=nic0,smb=/home/boss/Schreibtisch/Arbeit
 ```
-in windows explorer: \\10.0.2.4\qemu   ---> Map network device... <br>
+In windows:  <br>
+explorer: \\10.0.2.4\qemu   ---> Map network device... <br>
 On Linux:  <br>
 ```bash
 sudo pluma /etc/samba/smb.conf 
