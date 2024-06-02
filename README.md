@@ -41,7 +41,7 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 ```
 Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
 Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup. <br>
-Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.  <br>
+Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, user -> next -> user, user, stupid questions -> next, no Spy, no Cortana.  <br>
 Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe <br>
 Now start it like this: <br>
 ```bash
@@ -114,7 +114,7 @@ sudo chmod a+w /var/lib/libvirt/images/win10.qcow2
   -device virtio-tablet,wheel-axis=true \
   -net none
 ```
-Press Enter at Boot, no Key, Win10ProN, Custom: Install Windows only, load Driver E:\viostor\w10\amd64, unhide, no internet, user boss, pwd boss, no Spy, no Cortana.<br>
+Press Enter at Boot, no Key, Win10ProN, Custom: Install Windows only, load Driver E:\viostor\w10\amd64, unhide, no internet, user user, pwd user, no Spy, no Cortana.<br>
 After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
 #### shutdown and reboot using this command:
 ```bash
@@ -163,7 +163,7 @@ sudo mv ./virtio-win.iso /var/lib/libvirt/images/
 Copy virtual disk from VMWARE and install it in Linux
 ```bash
 sudo rm /var/lib/libvirt/images/Siemens_TIA19.qcow2
-sudo qemu-img convert -f vmdk -O qcow2 /home/boss/Schreibtisch/Siemens_TIA19.vmdk /var/lib/libvirt/images/Siemens_TIA19.qcow2
+sudo qemu-img convert -f vmdk -O qcow2 /home/user/Schreibtisch/Siemens_TIA19.vmdk /var/lib/libvirt/images/Siemens_TIA19.qcow2
 sudo chmod a+w /var/lib/libvirt/images/Siemens_TIA19.qcow2
 ```
 In Windows 10 after start qemu run D:\virtio-win-guest-tools.exe
@@ -300,11 +300,11 @@ cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 
 #### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
 ```bash
--device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/boss/Schreibtisch/Arbeit
+-device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
 ```
 Also working:
 ```bash
--nic user,id=nic0,smb=/home/boss/Schreibtisch/Arbeit
+-nic user,id=nic0,smb=/home/user/Schreibtisch/Arbeit
 ```
 In windows:  <br>
 explorer: \\10.0.2.4\qemu   ---> Map network device... <br>
@@ -315,9 +315,9 @@ sudo pluma /etc/samba/smb.conf
    bind interfaces only = Yes
    interfaces = lo br0
 [share]
-   path = /home/boss/Schreibtisch/Arbeit
+   path = /home/user/Schreibtisch/Arbeit
    read only = No
-   force user = boss
+   force user = user
 # End /etc/samba/smb.conf   
 testparm -s
 sudo service smbd restart
