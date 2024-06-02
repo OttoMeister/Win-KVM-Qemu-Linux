@@ -184,10 +184,16 @@ swtpm socket \
   -cpu host,migratable=on,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
   -enable-kvm \
   -m 8G \
-  -smp 6 \
+  -smp 6,sockets=1,cores=3,threads=2 \
   -machine pc-q35-6.2,accel=kvm,smm=on \
+  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
+  -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
+  -tpmdev emulator,id=tpm0,chardev=chrtpm \
+  -device tpm-tis,tpmdev=tpm0 \
   -global driver=cfi.pflash01,property=secure,value=on \
-  -device virtio-tablet,wheel-axis=true \
+  -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
+  -device virtio-tablet,wheel-axis=true 
 ```
 
 #### qemu-system-x86_64 - Base parameters for Windows 10
