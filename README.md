@@ -42,7 +42,7 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
 Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup. <br>
 Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, boss -> next -> boss, boss, stupid questions -> next, no Spy, no Cortana.  <br>
-Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
+Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe <br>
 Now start it like this: <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
@@ -74,6 +74,16 @@ swtpm socket \
   -chardev spicevmc,id=spicechannel0,name=vdagent \
   -display spice-app
 ```
+#### Usefull Tools: <br>
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
+https://download.sysinternals.com/files/AutoLogon.zip <br>
+https://github.com/hellzerg/optimizer/releases/latest <br>
+https://github.com/ionuttbara/one-drive-uninstaller <br>
+https://www.7-zip.org/download.html <br>
+https://download.sysinternals.com/files/SDelete.zip <br>
+https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
+https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
+
 ### Install Windows 10 auf KVM
 
 #### Download image
@@ -124,19 +134,19 @@ After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-
   -device virtio-net,netdev=vmnic \
   -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
 ```
-# Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter 
-# Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen:
-http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab
-# Download Drivers and Tools on Linux and use drag and dropand to install:
-# Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip"
-# Usefull Tools
-https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe
-https://download.sysinternals.com/files/AutoLogon.zip
-https://github.com/hellzerg/optimizer/releases/latest
-https://github.com/ionuttbara/one-drive-uninstaller
-https://www.7-zip.org/download.html
-https://download.sysinternals.com/files/SDelete.zip
-https://github.com/Open-Shell/Open-Shell-Menu/releases/latest
-https://www.mozilla.org/en-US/firefox/all/#product-desktop-release
+Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
+Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen: <br>
+http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab <br>
+#### Download Drivers and Tools on Linux and use drag and dropand to install: <br>
+Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip" <br>
+#### Usefull Tools: <br>
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
+https://download.sysinternals.com/files/AutoLogon.zip <br>
+https://github.com/hellzerg/optimizer/releases/latest <br>
+https://github.com/ionuttbara/one-drive-uninstaller <br>
+https://www.7-zip.org/download.html <br>
+https://download.sysinternals.com/files/SDelete.zip <br>
+https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
+https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
 
 
