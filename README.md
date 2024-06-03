@@ -261,8 +261,8 @@ check permision again:  <br>
 ```bash
 ls -l /dev/bus/usb/003/012
 ```
-crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br>
-start quem with this parameter to use usb ethernet device <br>
+crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br> <br>
+Now start quem with this parameter to use usb ethernet device <br>
 ```bash
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
 ```
