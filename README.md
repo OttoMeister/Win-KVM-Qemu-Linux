@@ -165,7 +165,7 @@ https://download.sysinternals.com/files/SDelete.zip <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
 
-### Move from VMware to KVM
+## Move from VMware to KVM
 Uninstall vmware utils using VMware <br>
 Disable Hibernate in Windows 10: <br>
 https://www.tenforums.com/tutorials/2859-enable-disable-hibernate-windows-10-a.html <br> 
@@ -188,7 +188,7 @@ In Windows 10 after start qemu run D:\virtio-win-guest-tools.exe
 
 ## Gereric Infos and Qemu parameters
 
-#### qemu-system-x86_64 - Base parameters for Windows 11
+### qemu-system-x86_64 - Base parameters for Windows 11
 ```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
@@ -211,7 +211,7 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true 
 ```
 
-#### qemu-system-x86_64 - Base parameters for Windows 10
+### qemu-system-x86_64 - Base parameters for Windows 10
 ```bash
 /usr/bin/qemu-system-x86_64 \
   -enable-kvm \
@@ -221,16 +221,16 @@ swtpm socket \
   -drive file=/var/lib/libvirt/images/win10.qcow2 \
   -device virtio-tablet,wheel-axis=true 
 ```
-#### qemu-system-x86_64 - Atatch one CD-ROM with the drivers
+### qemu-system-x86_64 - Atatch one CD-ROM with the drivers
 ```bash
 -cdrom /var/lib/libvirt/images/virtio-win.iso
 ```
-#### qemu-system-x86_64 - Atatch two CD-ROM with the drivers
+### qemu-system-x86_64 - Atatch two CD-ROM with the drivers
 ```bash
 -drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win10.iso 
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso
 ```
-#### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
+### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
 kernel: usb 3-4.2: new high-speed USB device number 12 using xhci_hcd <br>
 kernel: usb 3-4.2: New USB device found, idVendor=0bda, idProduct=8153, bcdDevice=30.00 <br>
 kernel: usb 3-4.2: New USB device strings: Mfr=1, Product=2, SerialNumber=6 <br>
@@ -261,20 +261,20 @@ start quem with this parameter to use usb ethernet device <br>
 ```bash
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
 ```
-#### qemu-system-x86_64 - Adds audio  (untested)
+### qemu-system-x86_64 - Adds audio  (untested)
 ```bash
 -audiodev driver=spice,id=audio -device intel-hda -device hda-duplex,audiodev=audio 
 ```
-#### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller (untested)
+### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller (untested)
 ```bash
 -device qemu-xhci,id=xhci 
 ```
-#### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
+### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
 ```bash
 -device virtio-tablet,wheel-axis=true 
 ```
 
-#### qemu-system-x86_64 - Copy & Paste + Drag & Drop + Automatic Resolution Adjustment
+### qemu-system-x86_64 - Copy & Paste + Drag & Drop + Automatic Resolution Adjustment
 start quem with this parameter to use direct spice app:
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
@@ -285,17 +285,17 @@ start quem with this parameter to connect later with spicy and start with second
 spicy -h localhost -p 3001
 ```
 
-#### qemu-system-x86_64 - The QEMU control console will be launched from the same terminal this script runs from.
+### qemu-system-x86_64 - The QEMU control console will be launched from the same terminal this script runs from.
 ```bash
 -monitor stdio
 ```
     
-#### qemu-system-x86_64 - Netzwerk
+### qemu-system-x86_64 - Netzwerk
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic
 ```
 
-#### qemu-system-x86_64 - Netzwerk  Ping probleme
+### qemu-system-x86_64 - Netzwerk  Ping probleme
 command for working Ping until next boot:
 ```bash
 sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
@@ -305,24 +305,7 @@ command for working Ping forever (on linux host):
 echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
 ```
 
-
-#### Clean up the virtual drive (remove temps files, etc) - note: do not compress end file.
-Defrag with the open source UltraDefrag software with "full optimisation" <br>
-Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
-On client:  <br>
-```bash
-sdelete -c c:
-sdelete -z c:
-```
-On Host:
-```bash
-time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
-cp /var/lib/libvirt/images/win10.comp.qcow2 /var/lib/libvirt/images/win10.qcow2
-time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
-cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
-```
-
-#### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
+### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
 ```
@@ -348,5 +331,22 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
+
+
+### Clean up the virtual drive (remove temps files, etc) - note: do not compress end file.
+Defrag with the open source UltraDefrag software with "full optimisation" <br>
+Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
+On client:  <br>
+```bash
+sdelete -c c:
+sdelete -z c:
+```
+On Host:
+```bash
+time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
+cp /var/lib/libvirt/images/win10.comp.qcow2 /var/lib/libvirt/images/win10.qcow2
+time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
+cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
+```
 
 
