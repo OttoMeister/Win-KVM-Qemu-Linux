@@ -90,14 +90,15 @@ swtpm socket \
   -display spice-app
 ```
 #### Usefull Tools: <br>
-https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
 https://download.sysinternals.com/files/AutoLogon.zip <br>
+https://download.sysinternals.com/files/SDelete.zip <br>
+https://www.7-zip.org/download.html <br>
+https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
+https://github.com/valinet/ExplorerPatcher
 https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
-https://www.7-zip.org/download.html <br>
-https://download.sysinternals.com/files/SDelete.zip <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
-https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
 
 ## Install Windows 10 on KVM
 
@@ -156,14 +157,15 @@ http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B2
 #### Download Drivers and Tools on Linux and use drag and drop to install: <br>
 Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip" <br>
 #### Usefull Tools: <br>
-https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
 https://download.sysinternals.com/files/AutoLogon.zip <br>
+https://download.sysinternals.com/files/SDelete.zip <br>
+https://www.7-zip.org/download.html <br>
+https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
+https://github.com/valinet/ExplorerPatcher
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
+https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
-https://www.7-zip.org/download.html <br>
-https://download.sysinternals.com/files/SDelete.zip <br>
-https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
-https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
 
 ## Move from VMware to KVM
 Uninstall vmware utils using VMware <br>
@@ -281,12 +283,12 @@ start quem with this parameter to use usb ethernet device <br>
 ```
 
 ### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
-Copy & Paste + Drag & Drop + Automatic Resolution Adjustment
-start quem with this parameter to use direct spice app:
+Copy & Paste + Drag & Drop + Automatic Resolution Adjustment <br>
+Start quem with this parameter to use direct spice app: <br>
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
 ```
-start quem with this parameter to connect later with spicy and start with second line remoute desktop:
+Start quem with this parameter to connect later with spicy in second line:
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
 spicy -h localhost -p 3001
