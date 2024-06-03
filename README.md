@@ -221,15 +221,18 @@ swtpm socket \
   -drive file=/var/lib/libvirt/images/win10.qcow2 \
   -device virtio-tablet,wheel-axis=true 
 ```
-### qemu-system-x86_64 - Atatch one CD-ROM with the drivers
+
+### qemu-system-x86_64 - Atatch CD-ROM with the drivers
+Atatch one CD-ROM with the drivers
 ```bash
 -cdrom /var/lib/libvirt/images/virtio-win.iso
 ```
-### qemu-system-x86_64 - Atatch two CD-ROM with the drivers
+Atatch two CD-ROM with the drivers
 ```bash
 -drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win10.iso 
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso
 ```
+
 ### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
 kernel: usb 3-4.2: new high-speed USB device number 12 using xhci_hcd <br>
 kernel: usb 3-4.2: New USB device found, idVendor=0bda, idProduct=8153, bcdDevice=30.00 <br>
@@ -261,14 +264,17 @@ start quem with this parameter to use usb ethernet device <br>
 ```bash
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
 ```
+
 ### qemu-system-x86_64 - Adds audio  (untested)
 ```bash
 -audiodev driver=spice,id=audio -device intel-hda -device hda-duplex,audiodev=audio 
 ```
+
 ### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller (untested)
 ```bash
 -device qemu-xhci,id=xhci 
 ```
+
 ### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
 ```bash
 -device virtio-tablet,wheel-axis=true 
@@ -331,22 +337,21 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
-
-
-### Clean up the virtual drive (remove temps files, etc) - note: do not compress end file.
+### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
 Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
+Clean with https://www.wisecleaner.com/wise-disk-cleaner.html
 On client:  <br>
 ```bash
 sdelete -c c:
 sdelete -z c:
 ```
-On Host:
+On host:
 ```bash
 time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
 cp /var/lib/libvirt/images/win10.comp.qcow2 /var/lib/libvirt/images/win10.qcow2
 time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
 cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 ```
-
+Note: do not compress the end file.<br>
 
