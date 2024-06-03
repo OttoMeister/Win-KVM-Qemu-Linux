@@ -4,7 +4,7 @@ Windows 10 and 11 on Linux using KVM and Qemu
 ### Preparacion:
 Installing all tools:
 ```bash
-sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  spice-client-gtk  virt-viewer
+sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system
 ```
 check if your system supports KVM:
 ```bash
@@ -288,9 +288,13 @@ Start quem with this parameter to use direct spice app: <br>
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
 ```
-Start quem with this parameter to connect later with spicy in second line:
+Start quem with this parameter to connect later with spice in second line:
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
+```
+Use one to connect to VM
+```bash
+remote-viewer spice://localhost:3001
 spicy -h localhost -p 3001
 ```
 Configure two USB redirection channel for spice.
