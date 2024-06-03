@@ -1,7 +1,7 @@
 # Win-KVM-Qemu-Linux
 Windows 10 and 11 on Linux using KVM and Qemu
 
-### Preparacion:
+## Preparacion:
 Installing all tools:
 ```bash
 sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system
