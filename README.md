@@ -303,10 +303,21 @@ Configure two USB redirection channel for spice.
 -device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir
 ```
 
-### qemu-system-x86_64 - The QEMU control console will be launched from the same terminal this script runs from.
+### qemu-system-x86_64 - The QEMU control console 
+It will be launched from the same terminal this script runs from.
 ```bash
 -monitor stdio
 ```
+Use the QEMU monitor with telnet:
+```bash
+-monitor telnet::45454,server,nowait -serial mon:stdio
+```
+and on a host terminal:
+```bash
+telnet localhost 45454
+```
+
+
 
 ### qemu-system-x86_64 - Netzwerk  Ping probleme
 Command on host for working Ping until next boot:
