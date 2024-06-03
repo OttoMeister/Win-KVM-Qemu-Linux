@@ -295,38 +295,36 @@ spicy -h localhost -p 3001
 ```bash
 -monitor stdio
 ```
-    
-### qemu-system-x86_64 - Netzwerk
-```bash
--device virtio-net,netdev=vmnic -netdev user,id=vmnic
-```
 
 ### qemu-system-x86_64 - Netzwerk  Ping probleme
-command for working Ping until next boot:
+Command on host for working Ping until next boot:
 ```bash
 sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
 ```
-command for working Ping forever (on linux host):
+Command on host for working Ping forever (on linux host):
 ```bash
 echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
+```
+    
+### qemu-system-x86_64 - Virtuel Network using virtio driver
+```bash
+-device virtio-net,netdev=vmnic -netdev user,id=vmnic
 ```
 
 ### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
 ```
-Also working:
-```bash
--nic user,id=nic0,smb=/home/user/Schreibtisch/Arbeit
-```
 In windows:  <br><br>
 explorer: \\10.0.2.4\qemu   ---> Map network device... <br><br>
-On Linux:  <br>
+On host:  <br>
 ```bash
-sudo pluma /etc/samba/smb.conf 
+sudo pluma /etc/samba/smb.conf
+# Start /etc/samba/smb.conf 
  [global]
    bind interfaces only = Yes
    interfaces = lo br0
+   idmap config * : backend = tdb
 [share]
    path = /home/user/Schreibtisch/Arbeit
    read only = No
@@ -340,7 +338,7 @@ sudo ufw allow samba
 ### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
 Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
-Clean with https://www.wisecleaner.com/wise-disk-cleaner.html
+Clean with https://www.wisecleaner.com/wise-disk-cleaner.html <br>
 On client:  <br>
 ```bash
 sdelete -c c:
