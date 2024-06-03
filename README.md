@@ -59,6 +59,8 @@ Internet Setup: Select "I do not have internet". Continue with limited setup.  <
 User Setup: Username: user -> Next.Password: user -> Next. Skip unnecessary options (Spy, Cortana). <br>
 Finalize: Shutdown, then restart. Install drivers: E:\virtio-win-guest-tools.exe. <br>
 Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
+Disable taskbar thumbnail preview using Windows Registry: <br>
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ExtendedUIHoverTime  DWORD 30000 <br>
 Now start your Windows 11 setup. <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
@@ -156,8 +158,11 @@ After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-
 Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
 Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen: <br>
 http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab <br>
-#### Download Drivers and Tools on Linux and use drag and drop to install: <br>
+#### Download Drivers and Tools on Linux and use drag and drop to install:
 Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip" <br>
+Disable taskbar thumbnail preview using Windows Registry: <br>
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ExtendedUIHoverTime  DWORD 30000 <br>
+
 #### Usefull Tools: <br>
 https://download.sysinternals.com/files/AutoLogon.zip <br>
 https://download.sysinternals.com/files/SDelete.zip <br>
