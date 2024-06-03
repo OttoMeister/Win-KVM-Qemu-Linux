@@ -321,14 +321,14 @@ On host:  <br>
 ```bash
 sudo pluma /etc/samba/smb.conf
 # Start /etc/samba/smb.conf 
- [global]
-   bind interfaces only = Yes
-   interfaces = lo br0
-   idmap config * : backend = tdb
+[global]
+	bind interfaces only = Yes
+	interfaces = lo br0
+	idmap config * : backend = tdb
 [share]
-   path = /home/user/Schreibtisch/Arbeit
-   read only = No
-   force user = user
+	force user = boss
+	path = /home/boss/Schreibtisch/Arbeit
+	read only = No
 # End /etc/samba/smb.conf   
 testparm -s
 sudo service smbd restart
