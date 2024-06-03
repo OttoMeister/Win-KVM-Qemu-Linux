@@ -328,7 +328,7 @@ echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
 ```
 In windows:  <br><br>
-explorer: \\10.0.2.4\qemu   ---> Map network device... <br><br>
+explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br><br>
 On host:  <br>
 ```bash
 sudo pluma /etc/samba/smb.conf
