@@ -379,7 +379,7 @@ On host:
 ```bash
 time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
 cp /var/lib/libvirt/images/win10.comp.qcow2 /var/lib/libvirt/images/win10.qcow2
-time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
+time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win11.qcow2  -O qcow2 /var/lib/libvirt/images/win11.comp.qcow2
 cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 ```
 Note: do not compress the end file.<br>
