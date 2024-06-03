@@ -138,7 +138,7 @@ After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-
 Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
 Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen: <br>
 http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab <br>
-#### Download Drivers and Tools on Linux and use drag and dropand to install: <br>
+#### Download Drivers and Tools on Linux and use drag and drop to install: <br>
 Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip" <br>
 #### Usefull Tools: <br>
 https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
