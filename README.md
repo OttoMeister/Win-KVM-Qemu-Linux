@@ -100,6 +100,7 @@ https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
+https://github.com/massgravel/Microsoft-Activation-Scripts <br>
 
 ## Install Windows 10 on KVM
 
@@ -167,6 +168,7 @@ https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe 
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
+https://github.com/massgravel/Microsoft-Activation-Scripts <br>
 
 ## Move from VMware to KVM
 Uninstall vmware utils using VMware <br>
