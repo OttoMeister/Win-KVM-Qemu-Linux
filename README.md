@@ -1,5 +1,16 @@
 # Win-KVM-Qemu-Linux
 Windows 10 and 11 on Linux using KVM and Qemu
+
+### Preparacion:
+Installing all tools:
+```bash
+sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  spice-client-gtk  virt-viewer
+```
+check if your system supports KVM:
+```bash
+kvm-ok
+```
+
 ### Install Windows 11 auf KVM
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
 ```bash
