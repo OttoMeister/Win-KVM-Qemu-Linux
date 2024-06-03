@@ -287,11 +287,11 @@ Now start quem with this parameter to use usb ethernet device <br>
 Copy & Paste + Drag & Drop + Automatic Resolution Adjustment <br>
 Start quem with this parameter to use direct spice app: <br>
 ```bash
--vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
+-vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
 ```
 Start quem with this parameter to connect later with spice in second line:
 ```bash
--vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
+-vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
 ```
 Use one to connect to VM
 ```bash
