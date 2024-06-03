@@ -50,11 +50,15 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 -netdev user,id=net0 -device e1000,netdev=net0 \
 -global driver=cfi.pflash01,property=secure,value=on
 ```
-Press Enter at boot, I do not have key, Win11ProN, Custom: Install Windows only, load Driver E:\viostor\w11\amd64, next -> installing Windows, 
-Use the "Shift + F10" keyboard shortcut to open Command Prompt on the Windows 11 setup. <br>
-Type the following command to disable the internet connection requirement to set up Windows 11 and press Enter: oobe\bypassnro -> Enter -> boot, "Shift + F10" ->  ipconfig /release  -> Enter, United States, Yes, US, Yes, add second layout, German (Germany), Add, I do not have internet, Continue with limited setup, user -> next -> user, user, stupid questions -> next, no Spy, no Cortana.  <br>
-Sutdown if finish and start new. Install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe <br>
-Now start it like this: <br>
+Boot: Press Enter at boot. <br>
+Setup: Select "I do not have a key", Choose Win11ProN, Select Custom: Install Windows only. <br>
+Load Driver: E:\viostor\w11\amd64. <br>
+Disable Internet Requirement: Shift + F10 -> oobe\bypassnro -> Enter, Reboot -> Shift + F10 -> ipconfig /release -> Enter. <br>
+Regional Settings: United States -> Yes. US -> Yes. Add German (Germany) layout. <br>
+Internet Setup: Select "I do not have internet". Continue with limited setup.  <br>
+User Setup: Username: user -> Next.Password: user -> Next. Skip unnecessary options (Spy, Cortana). <br>
+Finalize: Shutdown, then restart. Install drivers: E:\virtio-win-guest-tools.exe. <br>
+Now start your Windows 11 setup. <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
