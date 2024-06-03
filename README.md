@@ -326,8 +326,8 @@ sudo pluma /etc/samba/smb.conf
 	interfaces = lo br0
 	idmap config * : backend = tdb
 [share]
-	force user = boss
-	path = /home/boss/Schreibtisch/Arbeit
+	force user = user
+	path = /home/user/Schreibtisch/Arbeit
 	read only = No
 # End /etc/samba/smb.conf   
 testparm -s
