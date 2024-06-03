@@ -95,7 +95,7 @@ https://download.sysinternals.com/files/AutoLogon.zip <br>
 https://download.sysinternals.com/files/SDelete.zip <br>
 https://www.7-zip.org/download.html <br>
 https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
-https://github.com/valinet/ExplorerPatcher
+https://github.com/valinet/ExplorerPatcher <br>
 https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
@@ -163,7 +163,7 @@ https://download.sysinternals.com/files/AutoLogon.zip <br>
 https://download.sysinternals.com/files/SDelete.zip <br>
 https://www.7-zip.org/download.html <br>
 https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
-https://github.com/valinet/ExplorerPatcher
+https://github.com/valinet/ExplorerPatcher  <br>
 https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://github.com/hellzerg/optimizer/releases/latest <br>
