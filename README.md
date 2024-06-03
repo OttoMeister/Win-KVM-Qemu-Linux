@@ -58,6 +58,7 @@ Regional Settings: United States -> Yes. US -> Yes. Add German (Germany) layout.
 Internet Setup: Select "I do not have internet". Continue with limited setup.  <br>
 User Setup: Username: user -> Next.Password: user -> Next. Skip unnecessary options (Spy, Cortana). <br>
 Finalize: Shutdown, then restart. Install drivers: E:\virtio-win-guest-tools.exe. <br>
+Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
 Now start your Windows 11 setup. <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
