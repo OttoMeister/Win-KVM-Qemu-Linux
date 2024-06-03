@@ -11,7 +11,7 @@ check if your system supports KVM:
 kvm-ok
 ```
 
-### Install Windows 11 auf KVM
+### Install Windows 11 on KVM
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
 ```bash
 sudo mv ~/Downloads/Win11_23H2_English_x64v2.iso /var/lib/libvirt/images/win11.iso
@@ -95,7 +95,7 @@ https://download.sysinternals.com/files/SDelete.zip <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
 https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
 
-### Install Windows 10 auf KVM
+### Install Windows 10 on KVM
 
 #### Download image
 Download image from https://msdl.gravesoft.dev (Windows 10 22H2 v1 ,Build 19045.2965, US English, IsoX64 Download)
