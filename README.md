@@ -280,7 +280,8 @@ start quem with this parameter to use usb ethernet device <br>
 -device virtio-tablet,wheel-axis=true 
 ```
 
-### qemu-system-x86_64 - Copy & Paste + Drag & Drop + Automatic Resolution Adjustment
+### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
+Copy & Paste + Drag & Drop + Automatic Resolution Adjustment
 start quem with this parameter to use direct spice app:
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
@@ -289,6 +290,11 @@ start quem with this parameter to connect later with spicy and start with second
 ```bash
 -vga qxl -device virtio-serial-pci -spice port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
 spicy -h localhost -p 3001
+```
+Configure two USB redirection channel for spice.
+```bash
+-device usb-redir,chardev=usbredir0 -chardev spicevmc,id=usbredir0,name=usbredir \
+-device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir
 ```
 
 ### qemu-system-x86_64 - The QEMU control console will be launched from the same terminal this script runs from.
