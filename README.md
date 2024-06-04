@@ -184,8 +184,8 @@ https://www.tenforums.com/tutorials/2859-enable-disable-hibernate-windows-10-a.h
 Disable Sleep Mode In Windows 10: <br>
 https://www.intowindows.com/how-to-enable-or-disable-sleep-mode-in-windows-10 <br>
 Turn Off Fast Startup in Windows 10: <br>
-https://www.tenforums.com/tutorials/4189-turn-off-fast-startup-windows-10-a.html <br>
-#### download drivers
+https://www.tenforums.com/tutorials/4189-turn-off-fast-startup-windows-10-a.html <br><br>
+download drivers <br>
 ```bash
 wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
 sudo mv ./virtio-win.iso /var/lib/libvirt/images/
