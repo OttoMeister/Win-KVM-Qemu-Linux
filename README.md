@@ -320,7 +320,7 @@ It will be launched from the same terminal this script runs from.
 ```
 Use the QEMU monitor with telnet:
 ```
--monitor telnet::45454,server,nowait -serial mon:stdio
+-monitor telnet::45454,server,nowait 
 ```
 and on a host terminal:
 ```
@@ -369,7 +369,8 @@ sudo ufw allow samba
 ```
 
 ### Kiosk Mode
-The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. 
+The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
+Untested: Use in QEMU Monitor "commit virtio0"- commit changes to the disk images (if -snapshot is used) or backing files. Use "info block" to show info of one block device or all block devices.
 ```
 -snapshot 
 ```
