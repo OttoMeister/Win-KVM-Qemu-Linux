@@ -368,6 +368,12 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
+### Kiosk mode
+When using the (unrelated) -snapshot option (Snapshot mode), you can always make VM snapshots, but they are deleted as soon as you exit QEMU.
+```
+-snapshot 
+```
+
 ### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
 Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
