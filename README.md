@@ -277,12 +277,12 @@ Now start quem with this parameter to use usb ethernet device <br>
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
 ```
 
-### qemu-system-x86_64 - Adds audio  (untested)
+### qemu-system-x86_64 - Adds audio 
 ```
--audiodev driver=spice,id=audio -device intel-hda -device hda-duplex,audiodev=audio 
+ -audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \
 ```
 
-### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller (untested)
+### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller
 ```
 -device qemu-xhci,id=xhci 
 ```
@@ -327,8 +327,6 @@ and on a host terminal:
 telnet localhost 45454
 ```
 
-
-
 ### qemu-system-x86_64 - Netzwerk  Ping probleme
 Command on host for working Ping until next boot:
 ```
@@ -370,7 +368,7 @@ sudo ufw allow samba
 
 ### Kiosk Mode
 The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
-Untested: Use in QEMU Monitor "commit virtio0"- commit changes to the disk images (if -snapshot is used) or backing files. Use "info block" to show info of one block device or all block devices.
+Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
 ```
 -snapshot 
 ```
