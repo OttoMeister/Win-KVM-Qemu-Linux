@@ -368,8 +368,8 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
-### Kiosk mode
-When using the (unrelated) -snapshot option (Snapshot mode), you can always make VM snapshots, but they are deleted as soon as you exit QEMU.
+### Kiosk Mode
+The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. 
 ```
 -snapshot 
 ```
