@@ -1,5 +1,5 @@
 # Win-KVM-Qemu-Linux
-Windows 10 and 11 on Linux using KVM and Qemu
+Windows 11 on Linux using KVM and Qemu
 
 ## Preparacion:
 Installing all tools:
@@ -105,77 +105,6 @@ https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe 
 https://github.com/massgravel/Microsoft-Activation-Scripts <br>
 https://github.com/es3n1n/no-defender <br>
 
-## Install Windows 10 on KVM
-
-#### Download image
-Download image from https://msdl.gravesoft.dev (Windows 10 22H2 v1 ,Build 19045.2965, US English, IsoX64 Download)
-```
-sudo mv ~/Downloads/Win10_22H2_English_x64v1.iso /var/lib/libvirt/images/win10.iso
-```
-#### Download drivers
-```
-wget https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso
-sudo mv ./virtio-win.iso /var/lib/libvirt/images/
-```
-#### Make image
-```
-sudo qemu-img create -f qcow2 /var/lib/libvirt/images/win10.qcow2 80G 
-sudo chmod a+w /var/lib/libvirt/images/win10.qcow2
-```
-#### Install Windows 10 Pro N 
-```
-/usr/bin/qemu-system-x86_64 \
-  -cpu host \
-  -boot d \
-  -cdrom /var/lib/libvirt/images/win10.iso \
-  -enable-kvm \
-  -m 4G \
-  -drive file=/var/lib/libvirt/images/win10.qcow2,format=qcow2 \
-  -drive if=ide,index=3,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
-  -device virtio-tablet,wheel-axis=true \
-  -net none
-```
-Press Enter at Boot, no Key, Win10ProN, Custom: Install Windows only, load Driver E:\viostor\w10\amd64, unhide, no internet, user user, pwd user, no Spy, no Cortana.<br>
-After installation install all Win Guest Tools and Drivers: E:\virtio-win-guest-tools.exe
-#### shutdown and reboot using this command:
-```
-/usr/bin/qemu-system-x86_64 \
-  -enable-kvm \
-  -m 8G \
-  -smp 6,sockets=1,cores=3,threads=2 \
-  -cpu host \
-  -drive file=/var/lib/libvirt/images/win10.qcow2 \
-  -device qemu-xhci \
-  -device virtio-tablet,wheel-axis=true \
-  -vga qxl \
-  -device virtio-serial-pci \
-  -spice port=3001,disable-ticketing=on \
-  -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-  -chardev spicevmc,id=spicechannel0,name=vdagent \
-  -display spice-app \
-  -device virtio-net,netdev=vmnic \
-  -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
-```
-Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
-Make all updates, any update like KB5034441 with error 0x80070643, you can make them unseen: <br>
-http://download.microsoft.com/download/F/2/2/F22D5FDB-59CD-4275-8C95-1BE17BF70B21/wushowhide.diagcab <br>
-#### Download Drivers and Tools on Linux and use drag and drop to install:
-Ethernet-USB drivers "AX88179_178A_Win7_v1.x.11.0_Drivers_Setup_v3.0.3.0.zip" and Realtek "USB 3.0 LAN Driver_10.005.zip" <br>
-Disable taskbar thumbnail preview using Windows Registry: <br>
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ExtendedUIHoverTime  DWORD 30000 <br>
-
-#### Usefull Tools: <br>
-https://download.sysinternals.com/files/AutoLogon.zip <br>
-https://download.sysinternals.com/files/SDelete.zip <br>
-https://www.7-zip.org/download.html <br>
-https://www.mozilla.org/en-US/firefox/all/#product-desktop-release <br>
-https://github.com/valinet/ExplorerPatcher  <br>
-https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
-https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
-https://github.com/hellzerg/optimizer/releases/latest <br>
-https://github.com/ionuttbara/one-drive-uninstaller <br>
-https://github.com/massgravel/Microsoft-Activation-Scripts <br>
-https://github.com/es3n1n/no-defender <br>
 
 ## Move from VMware to KVM
 Uninstall vmware utils using VMware <br>
@@ -196,11 +125,11 @@ sudo rm /var/lib/libvirt/images/Siemens_TIA19.qcow2
 sudo qemu-img convert -f vmdk -O qcow2 /home/user/Schreibtisch/Siemens_TIA19.vmdk /var/lib/libvirt/images/Siemens_TIA19.qcow2
 sudo chmod a+w /var/lib/libvirt/images/Siemens_TIA19.qcow2
 ```
-In Windows 10 after start qemu run D:\virtio-win-guest-tools.exe
+In Windows after start qemu run D:\virtio-win-guest-tools.exe
 
 ## Gereric Infos and Qemu parameters
 
-### qemu-system-x86_64 - Base parameters for Windows 11
+#### qemu-system-x86_64 - Base parameters for Windows 11
 ```
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
@@ -223,7 +152,7 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true 
 ```
 
-### qemu-system-x86_64 - Base parameters for Windows 10
+#### qemu-system-x86_64 - Base parameters for Windows 10
 ```
 /usr/bin/qemu-system-x86_64 \
   -enable-kvm \
@@ -234,7 +163,7 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true 
 ```
 
-### qemu-system-x86_64 - Atatch CD-ROM with the drivers
+#### qemu-system-x86_64 - Atatch CD-ROM with the drivers
 Atatch one CD-ROM with the drivers
 ```
 -cdrom /var/lib/libvirt/images/virtio-win.iso
@@ -245,7 +174,7 @@ Atatch two CD-ROM with the drivers
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso
 ```
 
-### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
+#### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
 kernel: usb 3-4.2: new high-speed USB device number 12 using xhci_hcd <br>
 kernel: usb 3-4.2: New USB device found, idVendor=0bda, idProduct=8153, bcdDevice=30.00 <br>
 kernel: usb 3-4.2: New USB device strings: Mfr=1, Product=2, SerialNumber=6 <br>
@@ -277,22 +206,22 @@ Now start quem with this parameter to use usb ethernet device <br>
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
 ```
 
-### qemu-system-x86_64 - Adds audio 
+#### qemu-system-x86_64 - Adds audio 
 ```
  -audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \
 ```
 
-### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller
+#### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller
 ```
 -device qemu-xhci,id=xhci 
 ```
 
-### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
+#### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
 ```
 -device virtio-tablet,wheel-axis=true 
 ```
 
-### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
+#### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
 Copy & Paste + Drag & Drop + Automatic Resolution Adjustment <br>
 Start quem with this parameter to use direct spice app: <br>
 ```
@@ -313,7 +242,7 @@ Configure two USB redirection channel for spice.
 -device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir
 ```
 
-### qemu-system-x86_64 - The QEMU control console 
+#### qemu-system-x86_64 - The QEMU control console 
 It will be launched from the same terminal this script runs from.
 ```
 -monitor stdio
@@ -327,7 +256,7 @@ and on a host terminal:
 telnet localhost 45454
 ```
 
-### qemu-system-x86_64 - Netzwerk  Ping probleme
+#### qemu-system-x86_64 - Netzwerk  Ping probleme
 Command on host for working Ping until next boot:
 ```
 sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
@@ -337,12 +266,12 @@ Command on host for working Ping forever (on linux host):
 echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
 ```
     
-### qemu-system-x86_64 - Virtuel Network using virtio driver
+#### qemu-system-x86_64 - Virtuel Network using virtio driver
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic
 ```
 
-### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
+#### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
 ```
@@ -366,14 +295,14 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
-### Kiosk Mode
+#### Kiosk Mode
 The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
 Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
 ```
 -snapshot 
 ```
 
-### Clean up the virtual drive (remove temps files, etc) 
+#### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
 Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
 Clean with https://www.wisecleaner.com/wise-disk-cleaner.html <br>
