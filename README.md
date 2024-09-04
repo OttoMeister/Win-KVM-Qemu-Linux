@@ -188,9 +188,13 @@ idVendor           0x0bda Realtek Semiconductor Corp. <br>
 idProduct          0x8153 RTL8153 Gigabit Ethernet Adapter <br>
 check permision:  <br>
 ```
-ls -l /dev/bus/usb/003/012
-crw-rw-r-- 1 root root 189, 267 Mai 23 16:18 /dev/bus/usb/003/012
+lsusb
 ```
+Bus 003 Device 012: ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Ethernet Adapter
+```
+ls -l /dev/bus/usb/003/012
+```
+crw-rw-r-- 1 root root 189, 267 Mai 23 16:18 /dev/bus/usb/003/012 <br> <br>
 change user:  <br>
 ```
 sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="8153", OWNER="root", GROUP="kvm", MODE="0666"' > /etc/udev/rules.d/99-usb-stick.rules
@@ -200,7 +204,8 @@ check permision again:  <br>
 ```
 ls -l /dev/bus/usb/003/012
 ```
-crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br> <br>
+crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br><br>
+
 Now start quem with this parameter to use usb ethernet device <br>
 ```
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
