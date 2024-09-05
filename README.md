@@ -129,7 +129,7 @@ In Windows after start qemu run D:\virtio-win-guest-tools.exe
 
 ## Gereric Infos and Qemu parameters
 
-#### qemu-system-x86_64 - Base parameters for Windows 11
+#### Base parameters for Windows 11
 ```
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
@@ -154,7 +154,7 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true  \
 ```
 
-#### qemu-system-x86_64 - Base parameters for Windows 10
+#### Base parameters for Windows 10
 ```
 /usr/bin/qemu-system-x86_64 \
   -enable-kvm \
@@ -165,7 +165,7 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true  \
 ```
 
-#### qemu-system-x86_64 - Atatch CD-ROM with the drivers
+#### Atatch CD-ROM with the drivers
 Atatch one CD-ROM with the drivers
 ```
 -cdrom /var/lib/libvirt/images/virtio-win.iso \
@@ -176,7 +176,7 @@ Atatch two CD-ROM with the drivers
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
 ```
 
-#### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
+#### Pass-Through Access to a Host USB Ethernet Stick
 kernel: usb 3-4.2: new high-speed USB device number 12 using xhci_hcd <br>
 kernel: usb 3-4.2: New USB device found, idVendor=0bda, idProduct=8153, bcdDevice=30.00 <br>
 kernel: usb 3-4.2: New USB device strings: Mfr=1, Product=2, SerialNumber=6 <br>
@@ -213,22 +213,22 @@ Now start quem with this parameter to use usb ethernet device <br>
 -device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \
 ```
 
-#### qemu-system-x86_64 - Adds audio 
+#### Adds audio 
 ```
  -audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \
 ```
 
-#### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller
+#### Enable USB3 support by emulating an XHCI controller
 ```
 -device qemu-xhci,id=xhci \ 
 ```
 
-#### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
+#### Emulate a tablet pointing device with mouse scroll support
 ```
 -device virtio-tablet,wheel-axis=true \
 ```
 
-#### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
+#### SPICE (Simple Protocol for Independent Computing Environments)
 Copy & Paste + Drag & Drop + Automatic Resolution Adjustment <br>
 Start quem with this parameter to use direct spice app: <br>
 ```
@@ -253,7 +253,7 @@ Configure two USB redirection channel for spice.
 -device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir \
 ```
 
-#### qemu-system-x86_64 - The QEMU control console 
+#### The QEMU control console 
 It will be launched from the same terminal this script runs from.
 ```
 -monitor stdio \
@@ -267,7 +267,7 @@ and on a host terminal:
 telnet localhost 45454
 ```
 
-#### qemu-system-x86_64 - Netzwerk  Ping probleme
+#### Netzwerk  Ping probleme
 Command on host for working Ping until next boot:
 ```
 sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
@@ -277,12 +277,26 @@ Command on host for working Ping forever (on linux host):
 echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf 
 ```
     
-#### qemu-system-x86_64 - Virtuel Network using virtio driver
+#### Virtuel Network using virtio driver
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic \
 ```
 
-#### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
+#### Port forwarting
+Using my android mobil with DroidCamX to seve as a webcam. Forwardng this to the Windows guest: http://192.168.1.59:4747/
+```
+-device virtio-net-pci,netdev=unet \
+-netdev user,id=unet,hostfwd=tcp::4747-:4747 \
+```
+
+#### Kiosk Mode
+The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
+Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
+```
+-snapshot \
+```
+
+#### Easy File Sharing with QEMU's built-in SMB
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
 ```
@@ -304,20 +318,6 @@ sudo pluma /etc/samba/smb.conf
 testparm -s
 sudo service smbd restart
 sudo ufw allow samba
-```
-
-#### Port forwarting
-Using my android mobil with DroidCamX to seve as a webcam. Forwardng this to the Windows guest: http://192.168.1.59:4747/
-```
--device virtio-net-pci,netdev=unet \
--netdev user,id=unet,hostfwd=tcp::4747-:4747 \
-```
-
-#### Kiosk Mode
-The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
-Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
-```
--snapshot \
 ```
 
 #### Clean up the virtual drive (remove temps files, etc) 
