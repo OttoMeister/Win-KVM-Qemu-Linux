@@ -256,7 +256,7 @@ Configure two USB redirection channel for spice.
 #### qemu-system-x86_64 - The QEMU control console 
 It will be launched from the same terminal this script runs from.
 ```
--monitor stdio
+-monitor stdio \
 ```
 Use the QEMU monitor with telnet:
 ```
