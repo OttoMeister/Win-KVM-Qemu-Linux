@@ -142,6 +142,8 @@ swtpm socket \
   -m 8G \
   -smp 6,sockets=1,cores=3,threads=2 \
   -machine pc-q35-6.2,accel=kvm,smm=on \
+  -serial none \
+  -parallel none \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
   -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
   -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
@@ -149,7 +151,7 @@ swtpm socket \
   -device tpm-tis,tpmdev=tpm0 \
   -global driver=cfi.pflash01,property=secure,value=on \
   -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
-  -device virtio-tablet,wheel-axis=true 
+  -device virtio-tablet,wheel-axis=true  \
 ```
 
 #### qemu-system-x86_64 - Base parameters for Windows 10
@@ -160,18 +162,18 @@ swtpm socket \
   -smp 6,sockets=1,cores=3,threads=2 \
   -cpu host \
   -drive file=/var/lib/libvirt/images/win10.qcow2 \
-  -device virtio-tablet,wheel-axis=true 
+  -device virtio-tablet,wheel-axis=true  \
 ```
 
 #### qemu-system-x86_64 - Atatch CD-ROM with the drivers
 Atatch one CD-ROM with the drivers
 ```
--cdrom /var/lib/libvirt/images/virtio-win.iso
+-cdrom /var/lib/libvirt/images/virtio-win.iso \
 ```
 Atatch two CD-ROM with the drivers
 ```
--drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win10.iso 
--drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso
+-drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win10.iso  \
+-drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
 ```
 
 #### qemu-system-x86_64 - Pass-Through Access to a Host USB Ethernet Stick
@@ -208,7 +210,7 @@ crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br><br>
 
 Now start quem with this parameter to use usb ethernet device <br>
 ```
--device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153
+-device usb-ehci,id=ehci -usb -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \
 ```
 
 #### qemu-system-x86_64 - Adds audio 
@@ -218,23 +220,27 @@ Now start quem with this parameter to use usb ethernet device <br>
 
 #### qemu-system-x86_64 - Enable USB3 support by emulating an XHCI controller
 ```
--device qemu-xhci,id=xhci 
+-device qemu-xhci,id=xhci \ 
 ```
 
 #### qemu-system-x86_64 - Emulate a tablet pointing device with mouse scroll support
 ```
--device virtio-tablet,wheel-axis=true 
+-device virtio-tablet,wheel-axis=true \
 ```
 
 #### qemu-system-x86_64 - SPICE (Simple Protocol for Independent Computing Environments)
 Copy & Paste + Drag & Drop + Automatic Resolution Adjustment <br>
 Start quem with this parameter to use direct spice app: <br>
 ```
--vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -display spice-app
+-vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on \
+-device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
+-chardev spicevmc,id=spicechannel0,name=vdagent \
+-display spice-app \
 ```
-Start quem with this parameter to connect later with spice in second line:
+Start quem with this parameter to connect later with spice:
 ```
--vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent
+-vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3001,disable-ticketing=on \
+-device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent \
 ```
 Use one to connect to VM
 ```
@@ -244,7 +250,7 @@ spicy -h localhost -p 3001
 Configure two USB redirection channel for spice.
 ```
 -device usb-redir,chardev=usbredir0 -chardev spicevmc,id=usbredir0,name=usbredir \
--device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir
+-device usb-redir,chardev=usbredir1 -chardev spicevmc,id=usbredir1,name=usbredir \
 ```
 
 #### qemu-system-x86_64 - The QEMU control console 
@@ -254,7 +260,7 @@ It will be launched from the same terminal this script runs from.
 ```
 Use the QEMU monitor with telnet:
 ```
--monitor telnet::45454,server,nowait 
+-monitor telnet::45454,server,nowait \
 ```
 and on a host terminal:
 ```
@@ -268,17 +274,17 @@ sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
 ```
 Command on host for working Ping forever (on linux host):
 ```
-echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
+echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf 
 ```
     
 #### qemu-system-x86_64 - Virtuel Network using virtio driver
 ```
--device virtio-net,netdev=vmnic -netdev user,id=vmnic
+-device virtio-net,netdev=vmnic -netdev user,id=vmnic \
 ```
 
 #### qemu-system-x86_64 - Easy File Sharing with QEMU's built-in SMB
 ```
--device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit
+-device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
 ```
 In windows:  <br><br>
 explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br><br>
@@ -300,11 +306,18 @@ sudo service smbd restart
 sudo ufw allow samba
 ```
 
+#### Port forwarting
+Using my android mobil with DroidCamX to seve as a webcam. Forwardng this to the Windows guest: http://192.168.1.59:4747/
+```
+-device virtio-net-pci,netdev=unet \
+-netdev user,id=unet,hostfwd=tcp::4747-:4747 \
+```
+
 #### Kiosk Mode
 The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
 Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
 ```
--snapshot 
+-snapshot \
 ```
 
 #### Clean up the virtual drive (remove temps files, etc) 
