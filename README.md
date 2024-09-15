@@ -306,14 +306,13 @@ On host:  <br>
 ```
 sudo pluma /etc/samba/smb.conf
 # Start /etc/samba/smb.conf 
-[global]
-	bind interfaces only = Yes
-	interfaces = lo br0
-	idmap config * : backend = tdb
+ [global]
+   bind interfaces only = yes
+   interfaces = lo 
 [share]
-	force user = user
-	path = /home/user/Schreibtisch/Arbeit
-	read only = No
+   path = /home/your_user/Desktop/Arbeit
+   read only = no
+   force user = your_user
 # End /etc/samba/smb.conf   
 testparm -s
 sudo service smbd restart
