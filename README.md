@@ -42,7 +42,7 @@ swtpm socket --tpmstate dir=/tmp/emulated_tpm --ctrl type=unixio,path=/tmp/emula
 -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
 -tpmdev emulator,id=tpm0,chardev=chrtpm \
 -device tpm-tis,tpmdev=tpm0 \
--machine pc-q35-6.2,accel=kvm,smm=on \
+-machine q35,accel=kvm,smm=on \
 -boot d -cdrom /var/lib/libvirt/images/win11.iso \
 -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
 -drive if=ide,index=3,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
@@ -73,7 +73,7 @@ swtpm socket \
   -enable-kvm \
   -m 8G \
   -smp 6 \
-  -machine pc-q35-6.2,accel=kvm,smm=on \
+  -machine q35,accel=kvm,smm=on \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
   -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
   -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
@@ -141,7 +141,7 @@ swtpm socket \
   -enable-kvm \
   -m 8G \
   -smp 6,sockets=1,cores=3,threads=2 \
-  -machine pc-q35-6.2,accel=kvm,smm=on \
+  -machine q35,accel=kvm,smm=on \
   -serial none \
   -parallel none \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
