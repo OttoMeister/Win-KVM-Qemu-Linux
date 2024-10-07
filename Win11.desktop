@@ -1,9 +1,0 @@
-#!/usr/bin/env xdg-open
-[Desktop Entry]
-Version=1.0
-Type=Application
-Terminal=false
-Name=Win11
-Exec=sh /home/boss/win11.sh
-Icon=/home/boss/win11.icon.png
-Name=Win11
