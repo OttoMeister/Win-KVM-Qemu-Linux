@@ -6,5 +6,3 @@ Terminal=false
 Name=Tia19
 Exec=sh /home/boss/tia19.sh
 Icon=/home/boss/tia19.icon.png
-Name=TIA19
-
