@@ -6,4 +6,3 @@ Terminal=false
 Name=Win11
 Exec=sh /home/boss/win11.sh
 Icon=/home/boss/win11.icon.png
-Name=Win11
