@@ -6,4 +6,3 @@ Terminal=false
 Name=Office
 Exec=sh /home/boss/office.sh
 Icon=/home/boss/office.icon.png
-Name=Win11
