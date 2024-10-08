@@ -4,7 +4,7 @@ Windows 11 on Linux using KVM and Qemu
 ## Preparacion:
 Installing all tools:
 ```
-sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system
+sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server
 ```
 check if your system supports KVM:
 ```
