@@ -4,7 +4,7 @@ Windows 11 on Linux using KVM and Qemu
 ## Preparacion:
 Installing all tools:
 ```
-sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server
+sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd
 ```
 check if your system supports KVM:
 ```
@@ -296,19 +296,51 @@ Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used)
 -snapshot \
 ```
 
-#### File Sharing with NFS
+#### File Sharing using Virtiofs - Atantion - Work in Progress
+On Linux host (Ubuntu/Debian):  <br>
+```
+sudo apt install uidmap virtiofsd
+/usr/libexec/virtiofsd --socket-path=/tmp/virtiofs_socket -o source=/home/boss/Desktop/Arbeit
+
+```
+
+In windows guest:  <br>
+Download and install WinFSP with at least "Core" feature enabled.<br>
+Install virtiofs driver and service from VirtIO-Win package.<br>
+
+
+
+#### File Sharing with NFS - Atantion - Work in Progress
+
+On Linux host (Ubuntu/Debian):  <br>
+```
+sudo apt install nfs-kernel-server
+sudo systemctl start nfs-kernel-server
+sudo systemctl enable nfs-kernel-server
+```
+Edit /etc/exports:
+
+After editing /etc/exports, apply the changes by running:
+```
+sudo exportfs -ra
+```
+
 In windows guest:  <br>
 Open PowerShell as Administrator and run the following command:<br>
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName "ServicesForNFS-ClientOnly" -All
 ```
 Restart windows guest after the installation is complete.  <br>
+Open a command prompt, and type: <br>
+```
+mount -o anon \\192.168.0.1\srv\nfs\files Z:
+```
 
 #### Easy File Sharing with QEMU's built-in SMB
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/you_user/Schreibtisch/Arbeit \
 ```
-In windows:  <br><br>
+In windows guest:  <br><br>
 explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br>
 
 #### Clean up the virtual drive (remove temps files, etc) 
