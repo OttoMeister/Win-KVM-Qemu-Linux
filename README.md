@@ -297,14 +297,12 @@ Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used)
 ```
 
 #### File Sharing with NFS
-In windows:  <br><br>
-Open PowerShell as Administrator:<br>
-Press Win + X and select Windows Terminal (Admin) or PowerShell (Admin).<br>
-Run the following command:<br>
+In windows guest:  <br><br>
+Open PowerShell as Administrator and run the following command:<br>
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName "ServicesForNFS-ClientOnly" -All
 ```
-Restart your computer after the installation is complete.  <br><br>
+Restart windows guest after the installation is complete.  <br><br>
 
 
 #### Easy File Sharing with QEMU's built-in SMB
