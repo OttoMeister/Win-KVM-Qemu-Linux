@@ -296,7 +296,7 @@ Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used)
 -snapshot \
 ```
 
-#### File Sharing using Virtiofs - Atantion - Work in Progress
+#### File Sharing using Virtiofs - Work in Progress
 On Linux host (Ubuntu/Debian):  <br>
 ```
 sudo apt install uidmap virtiofsd
@@ -310,7 +310,7 @@ Install virtiofs driver and service from VirtIO-Win package.<br>
 
 
 
-#### File Sharing with NFS - Atantion - Work in Progress
+#### File Sharing with NFS - Work in Progress
 
 On Linux host (Ubuntu/Debian):  <br>
 ```
