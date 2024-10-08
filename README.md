@@ -298,26 +298,11 @@ Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used)
 
 #### Easy File Sharing with QEMU's built-in SMB
 ```
--device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
+-device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/you_user/Schreibtisch/Arbeit \
 ```
 In windows:  <br><br>
 explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br><br>
-On host:  <br>
-```
-sudo pluma /etc/samba/smb.conf
-# Start /etc/samba/smb.conf 
- [global]
-   bind interfaces only = yes
-   interfaces = lo 
-[share]
-   path = /home/your_user/Desktop/Arbeit
-   read only = no
-   force user = your_user
-# End /etc/samba/smb.conf   
-testparm -s
-sudo service smbd restart
-sudo ufw allow samba
-```
+
 
 #### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
