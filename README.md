@@ -297,21 +297,19 @@ Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used)
 ```
 
 #### File Sharing with NFS
-In windows guest:  <br><br>
+In windows guest:  <br>
 Open PowerShell as Administrator and run the following command:<br>
 ```
 Enable-WindowsOptionalFeature -Online -FeatureName "ServicesForNFS-ClientOnly" -All
 ```
-Restart windows guest after the installation is complete.  <br><br>
-
+Restart windows guest after the installation is complete.  <br>
 
 #### Easy File Sharing with QEMU's built-in SMB
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/you_user/Schreibtisch/Arbeit \
 ```
 In windows:  <br><br>
-explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br><br>
-
+explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br>
 
 #### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
