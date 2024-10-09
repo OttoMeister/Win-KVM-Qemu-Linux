@@ -137,13 +137,11 @@ swtpm socket \
   --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock \
   --daemon && \
 /usr/bin/qemu-system-x86_64 \
-  -cpu host,migratable=on,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+  -cpu host,+hv-time,+hv-relaxed,+hv-vapic,+hv-spinlocks=0x1fff \
   -enable-kvm \
   -m 8G \
   -smp 6,sockets=1,cores=3,threads=2 \
   -machine q35,accel=kvm,smm=on \
-  -serial none \
-  -parallel none \
   -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
   -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
   -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
@@ -154,17 +152,6 @@ swtpm socket \
   -device virtio-tablet,wheel-axis=true  \
 ```
 
-#### Base parameters for Windows 10
-```
-/usr/bin/qemu-system-x86_64 \
-  -enable-kvm \
-  -m 8G \
-  -smp 6,sockets=1,cores=3,threads=2 \
-  -cpu host \
-  -drive file=/var/lib/libvirt/images/win10.qcow2 \
-  -device virtio-tablet,wheel-axis=true  \
-```
-
 #### Atatch CD-ROM with the drivers
 Atatch one CD-ROM with the drivers
 ```
@@ -172,7 +159,7 @@ Atatch one CD-ROM with the drivers
 ```
 Atatch two CD-ROM with the drivers
 ```
--drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win10.iso  \
+-drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win11.iso  \
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
 ```
 
