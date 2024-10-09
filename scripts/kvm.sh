@@ -1,13 +1,14 @@
 # Begin defining the command to launch the QEMU system emulator
+
 # Define the output file 
 output_file="${vm_name}.tmp.sh"
 
 # Delete the output file if it exists
 rm -f "$output_file" 
 if [ "$TSM" = yes ]; then {
-# Creates a directory (/tmp/emulated_tpm_${vm_name}) for storing TPM state files. The -p flag ensures that the directory is created only if it doesn't already exist.
+# Creates a directory (/tmp/emulated_tpm_${vm_name}) for storing TPM state files. 
 echo "mkdir -p /tmp/emulated_tpm_${vm_name} &&"
-# Runs the swtpm (software TPM emulator) as a background daemon process. It sets up a TPM 2.0 emulator to provide a virtual TPM device for the virtual machine.
+# Runs the swtpm software TPM 2.0 emulator as a background daemon process. 
 echo "swtpm socket \\"
 # Specifies the directory to store the TPM state files.
 echo "--tpmstate dir=/tmp/emulated_tpm_${vm_name} \\"
@@ -19,12 +20,14 @@ echo "--daemon &&"
 
 # Launches the QEMU virtual machine emulator with specific options and configurations.
 echo /usr/bin/qemu-system-x86_64 \\ >> "$output_file"
+
 # Setting a name for the QEMU VM
-echo -name $vm_name \\ >> "$output_file"
-# Suppresses the default networking configuration and the creation of several other default devices.
-echo -nodefaults \\ >> "$output_file"
-# Configures the CPU to match the host CPU and enable several CPU features like Hyper-V enlightenment for better virtualization performance.
-echo -cpu host,migratable=on,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \\ >> "$output_file"
+echo -name $vm_name,debug-threads=on \\ >> "$output_file"
+#echo -name $vm_name \\ >> "$output_file"
+
+# Hardware config
+# Configures the CPU to match the host CPU and enable several CPU features for better virtualization performance.
+echo -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \\ >> "$output_file"
 # Enables KVM (Kernel-based Virtual Machine) acceleration for better performance on compatible CPUs.
 echo -enable-kvm \\ >> "$output_file" 
 # Allocates X GB of RAM to the virtual machine
@@ -32,14 +35,24 @@ echo -m $vm_memory \\ >> "$output_file"
 # Configures 4 CPUs with 1 socket, 2 cores per socket, and 2 threads per core.
 echo -smp $vm_smp \\ >> "$output_file"
 # Specifies the machine type with the Q35 chipset, enables KVM acceleration, and turns on SMM (System Management Mode).
-echo -machine q35,accel=kvm,smm=on \\ >> "$output_file"
+echo -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on  \\ >> "$output_file"
+# config the Programmable Interval Timer
+echo -global kvm-pit.lost_tick_policy=delay  \\ >> "$output_file"
+# Suppresses the default networking configuration and the creation of several other default devices.
+echo -nodefaults -serial none -parallel none -no-user-config \\ >> "$output_file"
+# Boot
+echo -boot strict=on \\ >> "$output_file"
+# no sleep
+echo -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\ >> "$output_file"
+
+
 # Adds UEFI firmware files to support secure boot.
 [ "$uefi_ovmf" = short ] && echo "-bios /usr/share/ovmf/OVMF.fd \\" >> "$output_file"
-# Using for read and write 
 if [ "$uefi_ovmf" = long ]; then {
 echo "-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \\"
 echo "-drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \\"
 } >> "$output_file"; fi
+
 # TPM 
 if [ "$TSM" = yes ]; then {
 # Defines a character device for the TPM, connected via the socket created earlier (swtpm-sock)
@@ -49,22 +62,37 @@ echo "-tpmdev emulator,id=tpm0,chardev=chrtpm -device tpm-tis,tpmdev=tpm0 \\"
 # Configures global settings for secure firmware boot.
 echo "-global driver=cfi.pflash01,property=secure,value=on \\"
 } >> "$output_file"; fi
+
 # Attaches a virtual hard disk image using the VirtIO interface for efficient I/O.
 echo -drive file=/var/lib/libvirt/images/${vm_name}.qcow2,format=qcow2,if=virtio,cache=writeback,discard=unmap \\ >> "$output_file"
+
 # Adds a virtual tablet device to capture mouse inputs smoothly.
 echo -device virtio-tablet,wheel-axis=true \\ >> "$output_file"
-# Adds a USB Enhanced Host Controller Interface (EHCI) and enables USB support in the VM.
+
+# enables USB support and adds a USB 2.0 EHCI and USB 3.0 XHCI controller in the VM.
 echo -usb -device usb-ehci,id=ehci \\ >> "$output_file"
+echo -device qemu-xhci,id=xhci \\ >> "$output_file"
+
+# Map webcam from Fujitsu Notebook to virtual machine - not working yet - work in progress
+#echo -device usb-host,hostbus=1,hostaddr=5  \\ >> "$output_file"
+#echo -device usb-host,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
+#echo -device usb-host,bus=ehci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
+#echo -device usb-host,bus=xhci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
+
 # Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM.
 [ "$vm_usb_network" = yes ] && echo "-device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \\" >> "$output_file"
+
 # Using my Android mobile with DroidCamX to serve as a webcam. Forwarding this to the Windows guest: http://192.168.1.59:4747/
 [ "$vm_with_redirect_ip_webcam" = yes ] && echo "-device virtio-net-pci,netdev=unet -netdev user,id=unet,hostfwd=tcp::4747-:${vm_redirect_port} \\" >> "$output_file"
+
 # Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg"
 [ "$vm_audio" = yes ] && echo "-audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \\" >> "$output_file"
-# Adds a USB 3.0 XHCI controller for better USB device support
-echo -device qemu-xhci,id=xhci \\ >> "$output_file"
+
 # Correct time synchronization and UTC as base time
-echo -rtc base=utc,clock=host \\ >> "$output_file"
+#echo -rtc base=utc,clock=host \\ >> "$output_file"
+echo -rtc base=localtime,driftfix=slew \\ >> "$output_file"
+
+# SPICE Support
 # Sets the VGA display to QXL for use with SPICE (a remote display protocol).
 echo -vga qxl \\ >> "$output_file"
 # Adds a VirtIO serial port for improved guest communication.
@@ -75,6 +103,7 @@ echo -spice addr=127.0.0.1,port=${spice_port},disable-ticketing=on \\ >> "$outpu
 echo -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \\ >> "$output_file"
 # Creates a character device for SPICE communication with the guest.
 echo -chardev spicevmc,id=spicechannel0,name=vdagent \\ >> "$output_file"
+
 # Adds USB redirection support, allowing USB devices from the client machine to be redirected from SPICE to the VM.
 if [ "$vm_usb_redirect" = yes ]; then {
 echo "-device ich9-usb-ehci1,id=usb \\"
@@ -88,31 +117,37 @@ echo "-device usb-redir,chardev=usbredirchardev2,id=usbredirdev2 \\"
 echo "-chardev spicevmc,name=usbredir,id=usbredirchardev3 \\"
 echo "-device usb-redir,chardev=usbredirchardev3,id=usbredirdev3 \\"
 } >> "$output_file"; fi
-# Adds a network device using VirtIO for efficient networking and sets up a shared folder from the host to the VM.
+
+# Configures user-mode networking with Samba folder sharing.
 echo -device virtio-net,netdev=vmnic -netdev restrict=${vm_without_internet},type=user,id=vmnic,smb=${vm_smb_drive} \\ >> "$output_file"
+
 # Opens a monitor console via Telnet on port $vm_monitor_port for managing the VM.
 echo -monitor telnet::$vm_monitor_port,server,nowait \\ >> "$output_file"
+
 # Attaches multiple ISO images as virtual CD-ROM drives to the VM for installation or upgrade purposes.
 [ -f "$vm_cdrom_0" ] && echo "-drive if=ide,index=0,media=cdrom,file=${vm_cdrom_0} \\" >> "$output_file"
 [ -f "$vm_cdrom_1" ] && echo "-drive if=ide,index=1,media=cdrom,file=${vm_cdrom_1} \\" >> "$output_file"
 [ -f "$vm_cdrom_2" ] && echo "-drive if=ide,index=2,media=cdrom,file=${vm_cdrom_2} \\" >> "$output_file"
+
 # When the -snapshot option is enabled, any changes made to the virtual disk(s) during the VM session are not written to the actual disk image files. Instead, they are stored temporarily in memory or in a temporary file.
 # Save snapshot using the QEMU monitor with telnet with "telnet localhost $vm_monitor_port" and command "commit virtio0"
 [ "$vm_kiosk_mode" = yes ] && echo "-snapshot \\" >> "$output_file"
-[ "$vm_debug" = yes ] && echo -d cpu_reset,int,guest_errors \\ >> "$output_file"
+
+# Enables debugging options for instruction disassembly, CPU, MMU, and guest errors.
+# intel-hda: write to r/o reg CORBSIZE and RIRBSIZE is audio init - ignore
+[ "$vm_debug" = yes ] && echo -d in_asm,cpu,mmu,guest_errors \\ >> "$output_file"
 # The & at the end runs the QEMU process in the background.
 echo \& >> "$output_file"
 
-# Open the SPICE client with the name and 800x600
+# Open the SPICE client with the name and resize to 800x600
 {
 echo "spicy -h localhost -p ${spice_port} &"
 echo "PID=\$!"
 echo "sleep 2"
-echo "echo \"Spicy started with PID: \$PID\""
 echo "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')"
-echo "echo \"Found window with ID: \$WINDOW_ID for PID: \$PID\""
-echo "NEW_NAME=${vm_name}"
-[ "$vm_kiosk_mode" = yes ] && echo "NEW_NAME=${vm_name}_Kiosk_Mode"
+echo "echo \"Found spicy window with WINDOW_ID: \$WINDOW_ID for PID: \$PID\""
+echo "NEW_NAME=${vm_name}-${vm_name}-${vm_name}"
+[ "$vm_kiosk_mode" = yes ] && echo "NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}"
 echo "wmctrl -i -r \$WINDOW_ID -T \$NEW_NAME"
 echo "wmctrl -i -r \$WINDOW_ID -e 0,100,100,800,600"
 echo "/usr/local/bin/xseticon -id \"\$WINDOW_ID\" ${vm_icon}"
@@ -134,4 +169,3 @@ echo killall swtpm
 echo sudo service smbd restart
 echo telnet localhost $vm_monitor_port
 echo \(qemu\) system_powerdown
-
