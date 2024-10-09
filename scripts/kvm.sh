@@ -45,7 +45,6 @@ echo -boot strict=on \\ >> "$output_file"
 # no sleep
 echo -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\ >> "$output_file"
 
-
 # Adds UEFI firmware files to support secure boot.
 [ "$uefi_ovmf" = short ] && echo "-bios /usr/share/ovmf/OVMF.fd \\" >> "$output_file"
 if [ "$uefi_ovmf" = long ]; then {
@@ -89,8 +88,7 @@ echo -device qemu-xhci,id=xhci \\ >> "$output_file"
 [ "$vm_audio" = yes ] && echo "-audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \\" >> "$output_file"
 
 # Correct time synchronization and UTC as base time
-#echo -rtc base=utc,clock=host \\ >> "$output_file"
-echo -rtc base=localtime,driftfix=slew \\ >> "$output_file"
+echo -rtc base=utc,clock=host,driftfix=slew \\ >> "$output_file"
 
 # SPICE Support
 # Sets the VGA display to QXL for use with SPICE (a remote display protocol).
