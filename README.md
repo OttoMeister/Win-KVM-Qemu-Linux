@@ -269,13 +269,6 @@ echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic \
 ```
 
-#### Port forwarting
-Using my android mobil with DroidCamX to seve as a webcam. Forwardng this to the Windows guest: http://192.168.1.59:4747/
-```
--device virtio-net-pci,netdev=unet \
--netdev user,id=unet,hostfwd=tcp::4747-:4747 \
-```
-
 #### Kiosk Mode
 The -snapshot option is particularly useful in a kiosk mode scenario where you want the VM to return to a clean state after each session, ensuring that no user changes are permanent. <br>
 Commit changes: Use in QEMU Monitor "commit virtio0" (if -snapshot is used) 
