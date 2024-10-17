@@ -1,0 +1,10 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Name=Office
+Exec=sh /home/boss/office.sh
+Icon=/home/boss/office.icon.png
+Name=Office
+
