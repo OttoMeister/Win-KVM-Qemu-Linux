@@ -83,10 +83,10 @@ echo -device qemu-xhci,id=xhci \\ >> "$output_file"
 #echo -device usb-host,bus=ehci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
 #echo -device usb-host,bus=xhci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
 
-# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM. Check permision, set usev rule
+# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM. Check permision, set udev rule
 [ "$vm_usb_network" = yes ] && echo "-device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \\" >> "$output_file"
 
-# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg". Check permision, set usev rule
+# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg". Check permision, set udev rule
 if [ "$vm_audio" = pipewire ]; then { 
 echo "-audiodev pipewire,id=audio0 \\"
 echo "-device intel-hda \\"
@@ -94,7 +94,7 @@ echo "-device hda-duplex,audiodev=audio0 \\"
 } >> "$output_file"; fi
 
 
-# Adds duplex audio with USB Headset. Check permision, set usev rule
+# Adds duplex audio with USB Headset. Check permision, set udev rule
 if [ "$vm_audio" = usbaudio ]; then { 
 echo "-device usb-host,vendorid=0x08bb,productid=0x2902 \\"
 
