@@ -5,6 +5,10 @@ output_file="${vm_name}.tmp.sh"
 
 # Delete the output file if it exists
 rm -f "$output_file" 
+# empty terminal
+clear
+
+# TPM emulator
 if [ "$TSM" = yes ]; then {
 # Creates a directory (/tmp/emulated_tpm_${vm_name}) for storing TPM state files. 
 echo "mkdir -p /tmp/emulated_tpm_${vm_name} &&"
@@ -52,7 +56,7 @@ echo "-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.
 echo "-drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \\"
 } >> "$output_file"; fi
 
-# TPM 
+# TPM emulator
 if [ "$TSM" = yes ]; then {
 # Defines a character device for the TPM, connected via the socket created earlier (swtpm-sock)
 echo "-chardev socket,id=chrtpm,path=/tmp/emulated_tpm_${vm_name}/swtpm-sock \\"
@@ -69,7 +73,8 @@ echo -drive file=/var/lib/libvirt/images/${vm_name}.qcow2,format=qcow2,if=virtio
 echo -device virtio-tablet,wheel-axis=true \\ >> "$output_file"
 
 # enables USB support and adds a USB 2.0 EHCI and USB 3.0 XHCI controller in the VM.
-echo -usb -device usb-ehci,id=ehci \\ >> "$output_file"
+echo -usb \\ >> "$output_file"
+echo -device usb-ehci,id=ehci \\ >> "$output_file"
 echo -device qemu-xhci,id=xhci \\ >> "$output_file"
 
 # Map webcam from Fujitsu Notebook to virtual machine - not working yet - work in progress
@@ -78,20 +83,29 @@ echo -device qemu-xhci,id=xhci \\ >> "$output_file"
 #echo -device usb-host,bus=ehci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
 #echo -device usb-host,bus=xhci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
 
-# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM.
+# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM. Check permision, set usev rule
 [ "$vm_usb_network" = yes ] && echo "-device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \\" >> "$output_file"
 
-# Using my Android mobile with DroidCamX to serve as a webcam. Forwarding this to the Windows guest: http://192.168.1.59:4747/
-[ "$vm_with_redirect_ip_webcam" = yes ] && echo "-device virtio-net-pci,netdev=unet -netdev user,id=unet,hostfwd=tcp::4747-:${vm_redirect_port} \\" >> "$output_file"
+# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg". Check permision, set usev rule
+if [ "$vm_audio" = pipewire ]; then { 
+echo "-audiodev pipewire,id=audio0 \\"
+echo "-device intel-hda \\"
+echo "-device hda-duplex,audiodev=audio0 \\" 
+} >> "$output_file"; fi
 
-# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg"
-[ "$vm_audio" = yes ] && echo "-audiodev pipewire,id=audio0 -device intel-hda -device hda-duplex,audiodev=audio0 \\" >> "$output_file"
+
+# Adds duplex audio with USB Headset. Check permision, set usev rule
+if [ "$vm_audio" = usbaudio ]; then { 
+echo "-device usb-host,vendorid=0x08bb,productid=0x2902 \\"
+
+} >> "$output_file"; fi
+
 
 # Correct time synchronization and UTC as base time
 echo -rtc base=utc,clock=host,driftfix=slew \\ >> "$output_file"
 
 # SPICE Support
-# Sets the VGA display to QXL for use with SPICE (a remote display protocol).
+# Sets the VGA display to QXL
 echo -vga qxl \\ >> "$output_file"
 # Adds a VirtIO serial port for improved guest communication.
 echo -device virtio-serial-pci \\ >> "$output_file"
@@ -116,8 +130,15 @@ echo "-chardev spicevmc,name=usbredir,id=usbredirchardev3 \\"
 echo "-device usb-redir,chardev=usbredirchardev3,id=usbredirdev3 \\"
 } >> "$output_file"; fi
 
-# Configures user-mode networking with Samba folder sharing.
-echo -device virtio-net,netdev=vmnic -netdev restrict=${vm_without_internet},type=user,id=vmnic,smb=${vm_smb_drive} \\ >> "$output_file"
+# virtiofs
+# https://github.com/winfsp/winfsp/
+# /usr/libexec/virtiofsd --socket-path=/tmp/vhostqemu --shared-dir=/home/boss/Desktop/Arbeit
+#echo -device vhost-user-fs-pci,chardev=chr-vu-fs0,tag=myfs \\ >> "$output_file"
+#echo -chardev socket,id=chr-vu-fs0,path=/tmp/vhostqemu \\ >> "$output_file"
+
+# user-mode networking with Samba folder sharing.
+echo -device virtio-net,netdev=vmnic \\ >> "$output_file"
+echo -netdev restrict=${vm_without_internet},type=user,id=vmnic,smb=${vm_smb_drive} \\ >> "$output_file"
 
 # Opens a monitor console via Telnet on port $vm_monitor_port for managing the VM.
 echo -monitor telnet::$vm_monitor_port,server,nowait \\ >> "$output_file"
@@ -133,7 +154,11 @@ echo -monitor telnet::$vm_monitor_port,server,nowait \\ >> "$output_file"
 
 # Enables debugging options for instruction disassembly, CPU, MMU, and guest errors.
 # intel-hda: write to r/o reg CORBSIZE and RIRBSIZE is audio init - ignore
-[ "$vm_debug" = yes ] && echo -d in_asm,cpu,mmu,guest_errors \\ >> "$output_file"
+if [ "$vm_debug" = yes ] ; then {
+echo -d in_asm,cpu,mmu,guest_errors \\
+# echo -D /tmp/${vm_name}.log  \\ 
+} >> "$output_file"; fi
+
 # The & at the end runs the QEMU process in the background.
 echo \& >> "$output_file"
 
@@ -157,7 +182,7 @@ echo "/usr/local/bin/xseticon -id \"\$WINDOW_ID\" ${vm_icon}"
 # Start everything
 bash "$output_file"
 
-echo +++++++++++++++++++++++++++++++++++++
+echo +++++++++++++++info+++++++++++++++++
 echo Compression of the image file 
 echo time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/${vm_name}.qcow2 -O qcow2 /var/lib/libvirt/images/${vm_name}.comp.qcow2
 echo cp /var/lib/libvirt/images/${vm_name}.comp.qcow2 /var/lib/libvirt/images/${vm_name}.qcow2
