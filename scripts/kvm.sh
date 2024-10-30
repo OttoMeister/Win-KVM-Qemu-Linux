@@ -93,13 +93,10 @@ echo "-device intel-hda \\"
 echo "-device hda-duplex,audiodev=audio0 \\" 
 } >> "$output_file"; fi
 
-
 # Adds duplex audio with USB Headset. Check permision, set udev rule.
 if [ "$vm_audio" = usbaudio ]; then { 
 echo "-device usb-host,vendorid=0x08bb,productid=0x2902 \\"
-
 } >> "$output_file"; fi
-
 
 # Correct time synchronization and UTC as base time
 echo -rtc base=utc,clock=host,driftfix=slew \\ >> "$output_file"
@@ -163,8 +160,7 @@ echo -d in_asm,cpu,mmu,guest_errors \\
 echo \& >> "$output_file"
 
 # Open the SPICE client with the name and resize to 800x600
-{
-echo "spicy -h localhost -p ${spice_port} &"
+{ echo "spicy -h localhost -p ${spice_port} &"
 echo "PID=\$!"
 echo "sleep 2"
 echo "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')"
