@@ -38,9 +38,9 @@ echo -enable-kvm \\ >> "$output_file"
 echo -m $vm_memory \\ >> "$output_file"
 # Configures 4 CPUs with 1 socket, 2 cores per socket, and 2 threads per core.
 echo -smp $vm_smp \\ >> "$output_file"
-# Specifies the machine type with the Q35 chipset, enables KVM acceleration, and turns on SMM (System Management Mode).
+# Specifies the machine type with the Q35 chipset and configures various machine features.
 echo -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on  \\ >> "$output_file"
-# config the Programmable Interval Timer
+# Config the Programmable Interval Timer
 echo -global kvm-pit.lost_tick_policy=delay  \\ >> "$output_file"
 # Suppresses the default networking configuration and the creation of several other default devices.
 echo -nodefaults -serial none -parallel none -no-user-config \\ >> "$output_file"
@@ -77,16 +77,16 @@ echo -usb \\ >> "$output_file"
 echo -device usb-ehci,id=ehci \\ >> "$output_file"
 echo -device qemu-xhci,id=xhci \\ >> "$output_file"
 
-# Map webcam from Fujitsu Notebook to virtual machine - not working yet - work in progress
-#echo -device usb-host,hostbus=1,hostaddr=5  \\ >> "$output_file"
-#echo -device usb-host,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
-#echo -device usb-host,bus=ehci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
-#echo -device usb-host,bus=xhci.0,vendorid=0x04f2,productid=0xb5b9 \\ >> "$output_file"
+# Map webcam from Notebook to virtual machine. Check permision, set udev rule.
+if [ "$vm_webcam" = yes ]; then { 
+echo -device usb-host,vendorid=0x04f2,productid=0xb735 \\ 
+echo -device usb-host,vendorid=0x04f2,productid=0xb5b9 \\ 
+} >> "$output_file"; fi
 
-# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM. Check permision, set udev rule
+# Passes a specific USB device (e.g., a Realtek USB network adapter) to the VM. Check permision, set udev rule.
 [ "$vm_usb_network" = yes ] && echo "-device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \\" >> "$output_file"
 
-# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg". Check permision, set udev rule
+# Adds duplex audio with PipeWire to VM - ignor error "intel-hda: write to r/o reg". Check permision, set udev rule.
 if [ "$vm_audio" = pipewire ]; then { 
 echo "-audiodev pipewire,id=audio0 \\"
 echo "-device intel-hda \\"
@@ -94,7 +94,7 @@ echo "-device hda-duplex,audiodev=audio0 \\"
 } >> "$output_file"; fi
 
 
-# Adds duplex audio with USB Headset. Check permision, set udev rule
+# Adds duplex audio with USB Headset. Check permision, set udev rule.
 if [ "$vm_audio" = usbaudio ]; then { 
 echo "-device usb-host,vendorid=0x08bb,productid=0x2902 \\"
 

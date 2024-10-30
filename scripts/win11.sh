@@ -20,6 +20,7 @@ vm_smb_drive=/home/boss/Schreibtisch/Arbeit #/home/boss/Desktop/Arbeit
 vm_monitor_port=45455
 vm_audio=no # use pipewire or usbaudio or no
 vm_usb_network=no # use yes or no
+vm_webcam=no # use yes or no
 vm_icon=/home/boss/${vm_name}.icon.png # /home/boss/office.icon.png /home/boss/tia19.icon.png /home/boss/win11.icon.png
 vm_debug=yes # use yes or no
 
