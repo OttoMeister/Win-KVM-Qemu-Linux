@@ -317,6 +317,8 @@ mount -o anon \\192.168.0.1\srv\nfs\files Z:
 ```
 
 #### Easy File Sharing with QEMU's built-in SMB
+
+QEMU launches Samba on the host using an automatically generated smb.conf file, located in /tmp/qemu-smb.random_string, and makes it available to the guest at a different IP address (default is 10.0.2.4). This setup only functions with user-mode networking and is handy if you prefer not to start the regular Samba service on the host, which can also provide shared access to the guest if you've configured shares on it. Samba must be installed on the host. <br>
 ```
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/you_user/Schreibtisch/Arbeit \
 ```
