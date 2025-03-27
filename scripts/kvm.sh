@@ -6,11 +6,6 @@ output_file=`/bin/mktemp`
 # Define the image directory -
 image_dir="/home/boss/Desktop/Arbeit/KVM"
 
-# Delete the output file if it exists
-rm -f "$output_file" 
-# empty terminal
-clear
-
 # TPM emulator
 if [ "$TSM" = yes ]; then {
 # Creates a directory (/tmp/emulated_tpm_${vm_name}) for storing TPM state files. 
