@@ -1,7 +1,10 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file="${vm_name}.tmp.sh"
+output_file=`/bin/mktemp`
+
+# Define the image directory -
+image_dir="/home/boss/Desktop/Arbeit/KVM"
 
 # Delete the output file if it exists
 rm -f "$output_file" 
@@ -39,9 +42,9 @@ echo -m $vm_memory \\ >> "$output_file"
 # Configures 4 CPUs with 1 socket, 2 cores per socket, and 2 threads per core.
 echo -smp $vm_smp \\ >> "$output_file"
 # Specifies the machine type with the Q35 chipset and configures various machine features.
-echo -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on  \\ >> "$output_file"
+echo -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on \\ >> "$output_file"
 # Config the Programmable Interval Timer
-echo -global kvm-pit.lost_tick_policy=delay  \\ >> "$output_file"
+echo -global kvm-pit.lost_tick_policy=delay \\ >> "$output_file"
 # Suppresses the default networking configuration and the creation of several other default devices.
 echo -nodefaults -serial none -parallel none -no-user-config \\ >> "$output_file"
 # Boot
@@ -67,7 +70,7 @@ echo "-global driver=cfi.pflash01,property=secure,value=on \\"
 } >> "$output_file"; fi
 
 # Attaches a virtual hard disk image using the VirtIO interface for efficient I/O.
-echo -drive file=/var/lib/libvirt/images/${vm_name}.qcow2,format=qcow2,if=virtio,cache=writeback,discard=unmap \\ >> "$output_file"
+echo -drive file=${image_dir}/${vm_name}.qcow2,format=qcow2,if=virtio,cache=writeback,discard=unmap \\ >> "$output_file"
 
 # Adds a virtual tablet device to capture mouse inputs smoothly.
 echo -device virtio-tablet,wheel-axis=true \\ >> "$output_file"
@@ -153,7 +156,7 @@ echo -monitor telnet::$vm_monitor_port,server,nowait \\ >> "$output_file"
 # intel-hda: write to r/o reg CORBSIZE and RIRBSIZE is audio init - ignore
 if [ "$vm_debug" = yes ] ; then {
 echo -d in_asm,cpu,mmu,guest_errors \\
-# echo -D /tmp/${vm_name}.log  \\ 
+# echo -D /tmp/${vm_name}.log \\ 
 } >> "$output_file"; fi
 
 # The & at the end runs the QEMU process in the background.
@@ -168,22 +171,26 @@ echo "echo \"Found spicy window with WINDOW_ID: \$WINDOW_ID for PID: \$PID\""
 echo "NEW_NAME=${vm_name}-${vm_name}-${vm_name}"
 [ "$vm_kiosk_mode" = yes ] && echo "NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}"
 echo "wmctrl -i -r \$WINDOW_ID -T \$NEW_NAME"
-echo "wmctrl -i -r \$WINDOW_ID -e 0,100,100,800,600"
+echo "wmctrl -i -r \$WINDOW_ID -e 0,100,100,1024,768"
 echo "/usr/local/bin/xseticon -id \"\$WINDOW_ID\" ${vm_icon}"
 } >> "$output_file"
 
 # If vm_debug is set to yes, display "$output_file" 
 [ "$vm_debug" = yes ] && cat "$output_file"
 
-# Start everything
-bash "$output_file"
+# Start everything and erase
+bash "$output_file" && rm "$output_file"
+
 
 echo +++++++++++++++info+++++++++++++++++
 echo Compression of the image file 
-echo time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/${vm_name}.qcow2 -O qcow2 /var/lib/libvirt/images/${vm_name}.comp.qcow2
-echo cp /var/lib/libvirt/images/${vm_name}.comp.qcow2 /var/lib/libvirt/images/${vm_name}.qcow2
-echo ls -l /var/lib/libvirt/images \&\& find /var/lib/libvirt/images \| sort 
-echo pluma tia19.sh office.sh win11.sh kvm.sh \&
+echo time nice ionice -c 3 qemu-img convert -c -p -f qcow2 ${image_dir}/${vm_name}.qcow2 -O qcow2 ${image_dir}/${vm_name}.comp.qcow2
+echo time nice ionice -c 3 sudo virt-sparsify --compress ${image_dir}/${vm_name}.qcow2 ${image_dir}/${vm_name}.comp.qcow2 \&\& chown boss:boss ${image_dir}/${vm_name}.comp.qcow2 
+echo cp ${image_dir}/${vm_name}.comp.qcow2 ${image_dir}/${vm_name}.qcow2
+echo mv ${image_dir}/${vm_name}.qcow2 ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2
+echo time nice ionice -c 3 7z a -mx=1 -mmt=on -p ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2.7z ${image_dir}/${vm_name}.qcow2 
+echo ls -l ${image_dir} \&\& find ${image_dir} \| sort 
+echo "pluma ~/kvm.sh ~/win11.sh ~/office.sh ~/tia19.sh" \&
 echo killall swtpm
 echo sudo service smbd restart
 echo telnet localhost $vm_monitor_port

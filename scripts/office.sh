@@ -11,7 +11,7 @@ spice_port=3005 # win11 = 3003, tia19 = 3004 or office = 3005
 TSM=no # use yes or no
 uefi_ovmf=long # OVMF long or short or none
 vm_without_internet=no # use yes or no
-vm_cdrom_0=/var/lib/libvirt/images/virtio-win.iso
+#vm_cdrom_0=/var/lib/libvirt/images/virtio-win.iso
 #vm_cdrom_1="/home/boss/Schreibtisch/Arbeit/TIA/TIA_Portal_STEP7_Prof_Safety_WinCC_V19.iso"
 #vm_cdrom_2="/home/boss/Schreibtisch/Arbeit/TIA/S7-PLCSIM_V19.iso"
 vm_kiosk_mode=no # use yes or no
