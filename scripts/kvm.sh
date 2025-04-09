@@ -4,7 +4,7 @@
 output_file=`/bin/mktemp`
 
 # Define the image directory -
-image_dir="/home/boss/Desktop/Arbeit/KVM"
+image_dir="~/Desktop/Arbeit/KVM"
 
 # TPM emulator
 if [ "$TSM" = yes ]; then {
