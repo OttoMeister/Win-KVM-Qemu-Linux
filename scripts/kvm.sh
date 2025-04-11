@@ -125,11 +125,6 @@ echo "-chardev spicevmc,name=usbredir,id=usbredirchardev3 \\"
 echo "-device usb-redir,chardev=usbredirchardev3,id=usbredirdev3 \\"
 } >> "$output_file"; fi
 
-# virtiofs
-# https://github.com/winfsp/winfsp/
-# /usr/libexec/virtiofsd --socket-path=/tmp/vhostqemu --shared-dir=/home/boss/Desktop/Arbeit
-#echo -device vhost-user-fs-pci,chardev=chr-vu-fs0,tag=myfs \\ >> "$output_file"
-#echo -chardev socket,id=chr-vu-fs0,path=/tmp/vhostqemu \\ >> "$output_file"
 
 # user-mode networking with Samba folder sharing.
 echo -device virtio-net,netdev=vmnic \\ >> "$output_file"
@@ -180,7 +175,7 @@ bash "$output_file" && rm "$output_file"
 echo +++++++++++++++info+++++++++++++++++
 echo Compression of the image file 
 echo time nice ionice -c 3 qemu-img convert -c -p -f qcow2 ${image_dir}/${vm_name}.qcow2 -O qcow2 ${image_dir}/${vm_name}.comp.qcow2
-echo time nice ionice -c 3 sudo virt-sparsify --compress ${image_dir}/${vm_name}.qcow2 ${image_dir}/${vm_name}.comp.qcow2 \&\& chown boss:boss ${image_dir}/${vm_name}.comp.qcow2 
+echo time nice ionice -c 3 sudo virt-sparsify --compress ${image_dir}/${vm_name}.qcow2 ${image_dir}/${vm_name}.comp.qcow2 \&\& chown `/usr/bin/whoami`:`/usr/bin/whoami` ${image_dir}/${vm_name}.comp.qcow2 
 echo cp ${image_dir}/${vm_name}.comp.qcow2 ${image_dir}/${vm_name}.qcow2
 echo mv ${image_dir}/${vm_name}.qcow2 ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2
 echo time nice ionice -c 3 7z a -mx=1 -mmt=on -p ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2.7z ${image_dir}/${vm_name}.qcow2 
