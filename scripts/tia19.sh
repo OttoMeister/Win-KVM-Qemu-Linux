@@ -22,7 +22,7 @@ vm_monitor_port=45457
 vm_audio=no # use pipewire or usbaudio or no
 vm_usb_network=yes # use yes or no
 vm_webcam=no # use yes or no
-vm_icon=~/${vm_name}.icon.png # /home/`/usr/bin/whoami`/office.icon.png /home/`/usr/bin/whoami`/tia19.icon.png /home/`/usr/bin/whoami`/win11.icon.png
+vm_icon=~/${vm_name}.icon.png 
 vm_debug=yes # use yes or no
 
 # load second script - do not change

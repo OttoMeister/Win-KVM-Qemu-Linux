@@ -1,10 +1,15 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=`/bin/mktemp`
+output_file=$(/bin/mktemp)
+user=$(/usr/bin/whoami)
 
 # Define the image directory -
-image_dir="~/Desktop/Arbeit/KVM"
+image_dir="$HOME/Desktop/Arbeit/KVM"
+[ ! -d "$image_dir" ] && { echo "Error: Directory $image_dir does not exist."; exit 1; }
+[ ! -w "$image_dir" ] && { echo "Error: No write permission for $image_dir."; exit 1; }
+[ ! -f "${image_dir}/${vm_name}.qcow2" ] && { echo "Error: Disk image ${image_dir}/${vm_name}.qcow2 not found."; exit 1; }
+[ ! -f "$vm_icon" ] && { echo "Warning: Icon $vm_icon not found."; vm_icon=""; }
 
 # TPM emulator
 if [ "$TSM" = yes ]; then {
@@ -139,7 +144,6 @@ echo -monitor telnet::$vm_monitor_port,server,nowait \\ >> "$output_file"
 [ -f "$vm_cdrom_2" ] && echo "-drive if=ide,index=2,media=cdrom,file=${vm_cdrom_2} \\" >> "$output_file"
 
 # When the -snapshot option is enabled, any changes made to the virtual disk(s) during the VM session are not written to the actual disk image files. Instead, they are stored temporarily in memory or in a temporary file.
-# Save snapshot using the QEMU monitor with telnet with "telnet localhost $vm_monitor_port" and command "commit virtio0"
 [ "$vm_kiosk_mode" = yes ] && echo "-snapshot \\" >> "$output_file"
 
 # Enables debugging options for instruction disassembly, CPU, MMU, and guest errors.
@@ -152,18 +156,20 @@ echo -d in_asm,cpu,mmu,guest_errors \\
 # The & at the end runs the QEMU process in the background.
 echo \& >> "$output_file"
 
-# Open the SPICE client with the name and resize to 800x600
-{ echo "spicy -h localhost -p ${spice_port} &"
-echo "PID=\$!"
-echo "sleep 2"
-echo "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')"
-echo "echo \"Found spicy window with WINDOW_ID: \$WINDOW_ID for PID: \$PID\""
-echo "NEW_NAME=${vm_name}-${vm_name}-${vm_name}"
-[ "$vm_kiosk_mode" = yes ] && echo "NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}"
-echo "wmctrl -i -r \$WINDOW_ID -T \$NEW_NAME"
-echo "wmctrl -i -r \$WINDOW_ID -e 0,100,100,1024,768"
-echo "/usr/local/bin/xseticon -id \"\$WINDOW_ID\" ${vm_icon}"
-} >> "$output_file"
+# SPICE client
+echo "spicy -h localhost -p ${spice_port} &" >> "$output_file"
+echo "PID=\$!" >> "$output_file"
+echo "sleep 3" >> "$output_file"
+echo "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')" >> "$output_file"
+echo "if [ -n \"\$WINDOW_ID\" ]; then" >> "$output_file"
+echo "  NEW_NAME=${vm_name}-${vm_name}-${vm_name}" >> "$output_file"
+echo "  [ \"$vm_kiosk_mode\" = yes ] && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" >> "$output_file"
+echo "  wmctrl -i -r \"\$WINDOW_ID\" -T \"\$NEW_NAME\" || echo 'Warning: Failed to set window title.'" >> "$output_file"
+echo "  wmctrl -i -r \"\$WINDOW_ID\" -e 0,100,100,1024,768 || echo 'Warning: Failed to resize window.'" >> "$output_file"
+echo "  [ -f \"$vm_icon\" ] && /usr/local/bin/xseticon -id \"\$WINDOW_ID\" \"$vm_icon\" 2>/dev/null || echo 'Warning: Failed to set icon.'" >> "$output_file"
+echo "else" >> "$output_file"
+echo "  echo 'Warning: Could not find SPICE window for PID \$PID.'" >> "$output_file"
+echo "fi" >> "$output_file"
 
 # If vm_debug is set to yes, display "$output_file" 
 [ "$vm_debug" = yes ] && cat "$output_file"
@@ -171,17 +177,18 @@ echo "/usr/local/bin/xseticon -id \"\$WINDOW_ID\" ${vm_icon}"
 # Start everything and erase
 bash "$output_file" && rm "$output_file"
 
-
 echo +++++++++++++++info+++++++++++++++++
 echo Compression of the image file 
 echo time nice ionice -c 3 qemu-img convert -c -p -f qcow2 ${image_dir}/${vm_name}.qcow2 -O qcow2 ${image_dir}/${vm_name}.comp.qcow2
-echo time nice ionice -c 3 sudo virt-sparsify --compress ${image_dir}/${vm_name}.qcow2 ${image_dir}/${vm_name}.comp.qcow2 \&\& chown `/usr/bin/whoami`:`/usr/bin/whoami` ${image_dir}/${vm_name}.comp.qcow2 
+echo time nice ionice -c 3 sudo virt-sparsify --compress ${image_dir}/${vm_name}.qcow2 ${image_dir}/${vm_name}.comp.qcow2 \&\& chown ${user}:${user} ${image_dir}/${vm_name}.comp.qcow2 
 echo cp ${image_dir}/${vm_name}.comp.qcow2 ${image_dir}/${vm_name}.qcow2
-echo mv ${image_dir}/${vm_name}.qcow2 ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2
-echo time nice ionice -c 3 7z a -mx=1 -mmt=on -p ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2.7z ${image_dir}/${vm_name}.qcow2 
+echo mv ${image_dir}/${vm_name}.qcow2      ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2
+echo time nice ionice -c 3 7z a -mx=1 -mmt=on -p ${image_dir}/$(date +"%y%m%d")-${vm_name}.qcow2.7z ${image_dir}/${vm_name}.qcow2
 echo ls -l ${image_dir} \&\& find ${image_dir} \| sort 
-echo "pluma ~/kvm.sh ~/win11.sh ~/office.sh ~/tia19.sh" \&
+echo pluma ~/kvm.sh ~/win11.sh ~/office.sh ~/tia19.sh \&
 echo killall swtpm
 echo sudo service smbd restart
 echo telnet localhost $vm_monitor_port
 echo \(qemu\) system_powerdown
+[ "$vm_kiosk_mode" = yes ] && echo "Warning: Kiosk mode enabled. Disk changes will be discarded unless committed via QEMU monitor."
+[ "$vm_kiosk_mode" = yes ] && echo "To commit snapshot, run: echo 'commit virtio0' | telnet localhost $vm_monitor_port"
