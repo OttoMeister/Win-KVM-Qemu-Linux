@@ -1,7 +1,8 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=$(mktemp) || { echo "Error: Failed to create temporary file."; exit 1; }
+output_file=$(mktemp)_{vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
+
 user=$(/usr/bin/whoami)
 
 # Define the image directory -
@@ -19,10 +20,17 @@ ato() { echo "$*" >> "$output_file"; }
 # TPM emulator
 if [ "$TSM" = yes ]; then 
   ato "mkdir -p /tmp/emulated_tpm_${vm_name} &&"
-  ato "swtpm socket \\"
+  ato "/usr/bin/swtpm_setup \\"
+  ato "--tpmstate /tmp/emulated_tpm_${vm_name} \\" 
+  ato "--create-ek --create-platform-cert --lock-nvram   --overwrite &&"
+  ato "/usr/bin/swtpm socket \\"
+  ato "--log level=20 \\"
   ato "--tpmstate dir=/tmp/emulated_tpm_${vm_name} \\"
+  ato "--tpm2 \\"
   ato "--ctrl type=unixio,path=/tmp/emulated_tpm_${vm_name}/swtpm-sock \\"
   ato "--daemon &&"
+  ato "sleep 1"
+  ato "[[ -S /tmp/emulated_tpm_${vm_name}/swtpm-sock ]] || { echo "TPM socket not up"; exit 1; }"
 fi
 
 # Launches the QEMU virtual machine emulator with specific options and configurations.
@@ -36,11 +44,12 @@ ato "-cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0
 ato "-enable-kvm \\" 
 ato "-m $vm_memory \\"
 ato "-smp $vm_smp \\"
-ato "-machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on \\"
+ato "-machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \\"
 ato "-global kvm-pit.lost_tick_policy=delay \\"
 ato "-nodefaults -serial none -parallel none -no-user-config \\"
 ato "-boot strict=on \\"
 ato "-global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\"
+
 
 # Adds UEFI firmware files to support secure boot.
 [ "$uefi_ovmf" = short ] && ato "-bios /usr/share/ovmf/OVMF.fd \\" 
@@ -48,8 +57,8 @@ ato "-global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\"
 [ "$uefi_ovmf" = long ] && ato "-drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \\"
 
 # TPM emulator   # Defines a character device for the TPM, connected via the socket created earlier (swtpm-sock)
+[ "$TSM" = yes ] && ato "-tpmdev emulator,id=tpm0,chardev=chrtpm \\"
 [ "$TSM" = yes ] && ato "-chardev socket,id=chrtpm,path=/tmp/emulated_tpm_${vm_name}/swtpm-sock \\"
-[ "$TSM" = yes ] && ato "-tpmdev emulator,id=tpm0,chardev=chrtpm"
 [ "$TSM" = yes ] && ato "-device tpm-tis,tpmdev=tpm0 \\"
 [ "$TSM" = yes ] && ato "-global driver=cfi.pflash01,property=secure,value=on \\"
 
@@ -128,6 +137,7 @@ ato "-monitor telnet::$vm_monitor_port,server,nowait \\"
 ato "&"  
 
 # SPICE client
+ato "sleep 2"
 ato "spicy -h localhost -p ${spice_port} &"
 ato "PID=\$!" 
 ato "sleep 3" 
@@ -144,12 +154,12 @@ ato "fi"
 
 # Debug output
 if [ "$vm_debug" = "yes" ]; then
-  echo "Generated QEMU command:"
+  echo "Generated ${output_file} QEMU command:"
   cat "$output_file"
 fi
 
 # Run and cleanup
-if bash "$output_file"; then rm "$output_file"
+if bash "$output_file"; then echo rm "$output_file"
 else echo "Error: Failed to execute QEMU command. See debug output above if enabled."; exit 1; 
 fi
 
@@ -171,9 +181,11 @@ echo "killall swtpm"
 echo "sudo service smbd restart"
 echo "# Monitor VM:"
 echo "telnet localhost $vm_monitor_port"
-echo "(qemu) system_powerdown"
+echo "# shutdown VM:"
+echo "echo system_powerdown | nc localhost $vm_monitor_port"
+
 if [ "$vm_kiosk_mode" = "yes" ]; then
     echo "Warning: Kiosk mode enabled. Disk changes are temporary unless committed."
-    echo "To commit snapshot: echo 'commit virtio0' | telnet localhost $vm_monitor_port"
+    echo "echo commit hd0 | nc localhost $vm_monitor_port"
 fi
 

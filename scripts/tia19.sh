@@ -11,11 +11,11 @@ spice_port=3004 # win11 = 3003, tia19 = 3004 or office = 3005
 TSM=no # use yes or no
 uefi_ovmf=long # OVMF long or short or none
 vm_without_internet=yes # use yes or no
-#vm_cdrom_0="/var/lib/libvirt/images/virtio-win.iso"
+vm_cdrom_0="/var/lib/libvirt/images/virtio-win.iso"
 #vm_cdrom_1="$HOME/Schreibtisch/Arbeit/SIMATIC_WinCC_Runtime_Professional_V19.iso"
 #vm_cdrom_2="$HOME/Schreibtisch/Arbeit/SIMATIC_WinCC_Runtime_Professional_V19_Upd3.iso"
 #vm_cdrom_3="$HOME/Schreibtisch/Arbeit/TIA_Portal_STEP7_Prof_Safety_WinCC_V19.iso"
-vm_kiosk_mode=no # use yes or no
+vm_kiosk_mode=yes # use yes or no
 vm_usb_redirect=yes # use yes or no
 vm_smb_drive=~/Schreibtisch/Arbeit 
 vm_monitor_port=45457
