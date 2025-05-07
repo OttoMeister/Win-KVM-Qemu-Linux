@@ -1,7 +1,7 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=$(mktemp)_{vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
+output_file=$(mktemp --suffix=${vm_name}) || { echo "Error: Failed to create temporary file."; exit 1; }
 
 user=$(/usr/bin/whoami)
 
