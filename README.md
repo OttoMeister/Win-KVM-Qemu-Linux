@@ -6,7 +6,7 @@ Installing all tools:
 ```
 sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd swtpm-tools swtpm
 sudo groupadd --system tpm
-sudo usermod -aG tpm boss
+sudo usermod -aG tpm user
 sudo chown -R root:tpm /var/lib/swtpm-localca
 sudo chmod -R 2770  /var/lib/swtpm-localca
 
