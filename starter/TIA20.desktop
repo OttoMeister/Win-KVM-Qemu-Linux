@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false
+Name=Tia19
+Exec=sh /home/boss/tia20.sh
+Icon=/home/boss/tia20.icon.png
+Name=TIA19
+Name[de_DE]=TIA20
