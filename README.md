@@ -4,12 +4,12 @@ Windows 11 on Linux using KVM and Qemu
 ## Preparacion:
 Installing all tools:
 ```bash
-sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86 \
+sudo apt-get install qemu-kvm bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86 \
 virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd swtpm-tools swtpm
 sudo groupadd --system tpm
 sudo usermod -aG tpm user
 sudo chown -R root:tpm /var/lib/swtpm-localca
-sudo chmod -R 2770  /var/lib/swtpm-localca
+sudo chmod -R 2770 /var/lib/swtpm-localca
 ```
 check if your system supports KVM:
 ```bash
@@ -60,42 +60,42 @@ Setup: Select "I do not have a key", Choose Win11ProN, Select Custom: Install Wi
 Load Driver: E:\viostor\w11\amd64. <br>
 Disable Internet Requirement: Shift + F10 -> oobe\bypassnro -> Enter, Reboot -> Shift + F10 -> ipconfig /release -> Enter. <br>
 Regional Settings: United States -> Yes. US -> Yes. Add German (Germany) layout. <br>
-Internet Setup: Select "I do not have internet". Continue with limited setup.  <br>
+Internet Setup: Select "I do not have internet". Continue with limited setup. <br>
 User Setup: Username: user -> Next.Password: user -> Next. Skip unnecessary options (Spy, Cortana). <br>
 Finalize: Shutdown, then restart. Install drivers: E:\virtio-win-guest-tools.exe. <br>
 Activate Windows -> open Powershell and insert "irm https://get.activated.win | iex" -> Enter -> 1 -> Enter <br>
 Disable taskbar thumbnail preview using Windows Registry: <br>
-HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ExtendedUIHoverTime  DWORD 30000 <br>
+HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\ExtendedUIHoverTime DWORD 30000 <br>
 Now start your Windows 11 setup. <br>
 ```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
-  --tpmstate dir=/tmp/emulated_tpm \
-  --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock \
-  --daemon && \
+ --tpmstate dir=/tmp/emulated_tpm \
+ --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock \
+ --daemon && \
 /usr/bin/qemu-system-x86_64 \
-  -cpu host,migratable=on,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
-  -enable-kvm \
-  -m 8G \
-  -smp 6 \
-  -machine q35,accel=kvm,smm=on \
-  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
-  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
-  -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
-  -tpmdev emulator,id=tpm0,chardev=chrtpm \
-  -device tpm-tis,tpmdev=tpm0 \
-  -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
-  -device qemu-xhci \
-  -device usb-tablet \
-  -global driver=cfi.pflash01,property=secure,value=on \
-  -device virtio-net,netdev=vmnic \
-  -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
-  -vga qxl \
-  -device virtio-serial-pci \
-  -spice port=3001,disable-ticketing=on \
-  -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-  -chardev spicevmc,id=spicechannel0,name=vdagent \
-  -display spice-app
+ -cpu host,migratable=on,hv_relaxed,hv_spinlocks=0x1fff,hv_vapic,hv_time \
+ -enable-kvm \
+ -m 8G \
+ -smp 6 \
+ -machine q35,accel=kvm,smm=on \
+ -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+ -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
+ -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
+ -tpmdev emulator,id=tpm0,chardev=chrtpm \
+ -device tpm-tis,tpmdev=tpm0 \
+ -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
+ -device qemu-xhci \
+ -device usb-tablet \
+ -global driver=cfi.pflash01,property=secure,value=on \
+ -device virtio-net,netdev=vmnic \
+ -netdev user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
+ -vga qxl \
+ -device virtio-serial-pci \
+ -spice port=3001,disable-ticketing=on \
+ -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
+ -chardev spicevmc,id=spicechannel0,name=vdagent \
+ -display spice-app
 ```
 #### Usefull Tools: <br>
 https://download.sysinternals.com/files/AutoLogon.zip <br>
@@ -106,7 +106,7 @@ https://github.com/valinet/ExplorerPatcher <br>
 https://github.com/hellzerg/optimizer/releases/latest <br>
 https://github.com/ionuttbara/one-drive-uninstaller <br>
 https://github.com/Open-Shell/Open-Shell-Menu/releases/latest <br>
-https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe  <br>
+https://github.com/ShadowWhisperer/Remove-MS-Edge/blob/main/Remove-EdgeOnly.exe <br>
 https://github.com/massgravel/Microsoft-Activation-Scripts <br>
 https://github.com/es3n1n/no-defender <br>
 
@@ -138,23 +138,23 @@ In Windows after start qemu run D:\virtio-win-guest-tools.exe
 ```bash
 mkdir -p /tmp/emulated_tpm && \
 swtpm socket \
-  --tpmstate dir=/tmp/emulated_tpm \
-  --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock \
-  --daemon && \
+ --tpmstate dir=/tmp/emulated_tpm \
+ --ctrl type=unixio,path=/tmp/emulated_tpm/swtpm-sock \
+ --daemon && \
 /usr/bin/qemu-system-x86_64 \
-  -cpu host,+hv-time,+hv-relaxed,+hv-vapic,+hv-spinlocks=0x1fff \
-  -enable-kvm \
-  -m 8G \
-  -smp 6,sockets=1,cores=3,threads=2 \
-  -machine q35,accel=kvm,smm=on \
-  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
-  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
-  -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
-  -tpmdev emulator,id=tpm0,chardev=chrtpm \
-  -device tpm-tis,tpmdev=tpm0 \
-  -global driver=cfi.pflash01,property=secure,value=on \
-  -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
-  -device virtio-tablet,wheel-axis=true  \
+ -cpu host,+hv-time,+hv-relaxed,+hv-vapic,+hv-spinlocks=0x1fff \
+ -enable-kvm \
+ -m 8G \
+ -smp 6,sockets=1,cores=3,threads=2 \
+ -machine q35,accel=kvm,smm=on \
+ -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+ -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
+ -chardev socket,id=chrtpm,path=/tmp/emulated_tpm/swtpm-sock \
+ -tpmdev emulator,id=tpm0,chardev=chrtpm \
+ -device tpm-tis,tpmdev=tpm0 \
+ -global driver=cfi.pflash01,property=secure,value=on \
+ -drive file=/var/lib/libvirt/images/win11.qcow2,format=qcow2,if=virtio \
+ -device virtio-tablet,wheel-axis=true \
 ```
 
 #### Atatch CD-ROM with the drivers
@@ -164,7 +164,7 @@ Atatch one CD-ROM with the drivers
 ```
 Atatch two CD-ROM with the drivers
 ```bash
--drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win11.iso  \
+-drive if=ide,index=1,media=cdrom,file=/var/lib/libvirt/images/win11.iso \
 -drive if=ide,index=2,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
 ```
 
@@ -178,9 +178,9 @@ kernel: usb 3-4.2: SerialNumber: 000001 <br>
 kernel: r8152-cfgselector 3-4.2: reset high-speed USB device number 12 using xhci_hcd <br>
 kernel: r8152 3-4.2:1.0: load rtl8153a-4 v2 02/07/20 successfully <br>
 Bus 003 Device 012: ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Ethernet Adapter <br>
-idVendor           0x0bda Realtek Semiconductor Corp. <br>
-idProduct          0x8153 RTL8153 Gigabit Ethernet Adapter <br>
-check permision:  <br>
+idVendor  0x0bda Realtek Semiconductor Corp. <br>
+idProduct  0x8153 RTL8153 Gigabit Ethernet Adapter <br>
+check permision: <br>
 ```bash
 lsusb
 ```
@@ -189,16 +189,16 @@ Bus 003 Device 012: ID 0bda:8153 Realtek Semiconductor Corp. RTL8153 Gigabit Eth
 ls -l /dev/bus/usb/003/012
 ```
 crw-rw-r-- 1 root root 189, 267 Mai 23 16:18 /dev/bus/usb/003/012 <br> <br>
-change user:  <br>
+change user: <br>
 ```bash
 sudo echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="0bda", ATTR{idProduct}=="8153", OWNER="root", GROUP="kvm", MODE="0666"' > /etc/udev/rules.d/99-usb-stick.rules
 udevadm control --reload-rules && udevadm trigger
 ```
-check permision again:  <br>
+check permision again: <br>
 ```bash
 ls -l /dev/bus/usb/003/012
 ```
-crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012  <br><br>
+crw-rw-rw- 1 root kvm 189, 267 Mai 23 17:43 /dev/bus/usb/003/012 <br><br>
 
 Now start quem with this parameter to use usb ethernet device <br>
 ```bash
@@ -259,7 +259,7 @@ and on a host terminal:
 telnet localhost 45454
 ```
 
-#### Netzwerk  Ping probleme
+#### Netzwerk Ping probleme
 Command on host for working Ping until next boot:
 ```bash
 sudo sysctl -w net.ipv4.ping_group_range='0 2147483647'
@@ -268,7 +268,7 @@ Command on host for working Ping forever (on linux host):
 ```bash
 echo "net.ipv4.ping_group_range = 0 2147483647" | sudo tee -a /etc/sysctl.conf 
 ```
-    
+ 
 #### Virtuel Network using virtio driver
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic \
@@ -288,93 +288,81 @@ QEMU launches Samba on the host using an automatically generated smb.conf file, 
 ```bash
 -device virtio-net,netdev=vmnic -netdev user,id=vmnic,smb=/home/you_user/Schreibtisch/Arbeit \
 ```
-In windows guest:  <br><br>
-explorer: \\\\10.0.2.4\qemu   ---> Map network device... <br>
+In windows guest: <br><br>
+explorer: \\\\10.0.2.4\qemu ---> Map network device... <br>
 
 #### Clean up the virtual drive (remove temps files, etc) 
 Defrag with the open source UltraDefrag software with "full optimisation" <br>
 Downlod tool: https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete <br>
 Clean with https://www.wisecleaner.com/wise-disk-cleaner.html <br>
-On client:  <br>
+On client: <br>
 ```bash
 sdelete -c c:
 sdelete -z c:
 ```
 On host:
 ```bash
-time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2  -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
+time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win10.qcow2 -O qcow2 /var/lib/libvirt/images/win10.comp.qcow2
 cp /var/lib/libvirt/images/win10.comp.qcow2 /var/lib/libvirt/images/win10.qcow2
-time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win11.qcow2  -O qcow2 /var/lib/libvirt/images/win11.comp.qcow2
+time nice ionice -c 3 qemu-img convert -c -p -f qcow2 /var/lib/libvirt/images/win11.qcow2 -O qcow2 /var/lib/libvirt/images/win11.comp.qcow2
 cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 ```
 Note: do not compress the end file.<br>
 
 ## Here is a runtime example of me working:
 ```bash
-/usr/bin/qemu-system-x86_64 \
-  -name tia20,debug-threads=on \
-  -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \
-  -enable-kvm -m 16G -smp cpus=6,sockets=1,cores=3,threads=2 \
-  -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \
-  -global kvm-pit.lost_tick_policy=delay -nodefaults -serial none \
-  -parallel none -no-user-config -boot strict=on \
-  -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \
-  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
-  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
-  -object iothread,id=io1 \
-  -drive id=hd0,file=/home/user/Desktop/Arbeit/KVM/tia20.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads \
-  -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 \
-  -device virtio-tablet,wheel-axis=true -usb \
-  -device usb-ehci,id=ehci -device qemu-xhci,id=xhci \
-  -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \
-  -rtc base=utc,clock=host,driftfix=slew -vga qxl -device virtio-serial-pci \
-  -spice addr=127.0.0.1,port=3005,disable-ticketing=on \
-  -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-  -chardev spicevmc,id=spicechannel0,name=vdagent \
-  -device virtio-net,netdev=vmnic \
-  -netdev restrict=yes,type=user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
-  -monitor telnet::45458,server,nowait \
-  -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
-  -snapshot -d in_asm,cpu,mmu,guest_errors
+/usr/bin/qemu-system-x86_64 -name tia20,debug-threads=on \
+ -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \
+ -enable-kvm -m 16G -smp cpus=6,sockets=1,cores=3,threads=2 \
+ -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \
+ -global kvm-pit.lost_tick_policy=delay -nodefaults -serial none \
+ -parallel none -no-user-config -boot strict=on \
+ -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \
+ -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+ -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
+ -object iothread,id=io1 \
+ -drive id=hd0,file=/home/user/Desktop/Arbeit/KVM/tia20.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads \
+ -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 \
+ -device virtio-tablet,wheel-axis=true -usb \
+ -device usb-ehci,id=ehci -device qemu-xhci,id=xhci \
+ -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 \
+ -rtc base=utc,clock=host,driftfix=slew -vga qxl -device virtio-serial-pci \
+ -spice addr=127.0.0.1,port=3005,disable-ticketing=on \
+ -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
+ -chardev spicevmc,id=spicechannel0,name=vdagent \
+ -device virtio-net,netdev=vmnic \
+ -netdev restrict=yes,type=user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
+ -monitor telnet::45458,server,nowait \
+ -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
+ -snapshot -d in_asm,cpu,mmu,guest_errors
 /usr/bin/spicy -h localhost -p 3005
 ```
 and this:
 ```bash
-/usr/bin/qemu-system-x86_64 \
-  -name office,debug-threads=on \
-  -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \
-  -enable-kvm \
-  -m 8G \
-  -smp cpus=6,sockets=1,cores=3,threads=2 \
-  -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \
-  -global kvm-pit.lost_tick_policy=delay \
-  -nodefaults \
-  -serial none \
-  -parallel none \
-  -no-user-config \
-  -boot strict=on \
-  -global ICH9-LPC.disable_s3=1 \
-  -global ICH9-LPC.disable_s4=1 \
-  -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
-  -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
-  -object iothread,id=io1 \
-  -drive id=hd0,file=/home/user/Desktop/Arbeit/KVM/office.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads \
-  -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 \
-  -device virtio-tablet,wheel-axis=true \
-  -usb \
-  -device usb-ehci,id=ehci \
-  -device qemu-xhci,id=xhci \
-  -rtc base=utc,clock=host,driftfix=slew \
-  -vga qxl \
-  -device virtio-serial-pci \
-  -spice addr=127.0.0.1,port=3006,disable-ticketing=on \
-  -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
-  -chardev spicevmc,id=spicechannel0,name=vdagent \
-  -device virtio-net,netdev=vmnic \
-  -netdev restrict=no,type=user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
-  -monitor telnet::45456,server,nowait \
-  -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
-  -d in_asm,cpu,mmu,guest_errors
+/usr/bin/qemu-system-x86_64 -name office,debug-threads=on \
+ -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \
+ -enable-kvm -m 8G -smp cpus=6,sockets=1,cores=3,threads=2 \
+ -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \
+ -global kvm-pit.lost_tick_policy=delay \
+ -nodefaults -serial none -parallel none -no-user-config -boot strict=on \
+ -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \
+ -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+ -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd \
+ -object iothread,id=io1 \
+ -drive id=hd0,file=/home/user/Desktop/Arbeit/KVM/office.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads \
+ -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 \
+ -device virtio-tablet,wheel-axis=true \
+ -usb -device usb-ehci,id=ehci -device qemu-xhci,id=xhci \
+ -rtc base=utc,clock=host,driftfix=slew \
+ -vga qxl -device virtio-serial-pci \
+ -spice addr=127.0.0.1,port=3006,disable-ticketing=on \
+ -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \
+ -chardev spicevmc,id=spicechannel0,name=vdagent \
+ -device virtio-net,netdev=vmnic \
+ -netdev restrict=no,type=user,id=vmnic,smb=/home/user/Schreibtisch/Arbeit \
+ -monitor telnet::45456,server,nowait \
+ -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso \
+ -d in_asm,cpu,mmu,guest_errors
 /usr/bin/spicy -h localhost -p 3006
 ```
 ## License
