@@ -237,7 +237,7 @@ Start quem with this parameter to connect later with spice:
 Use one to connect to VM
 ```
 remote-viewer spice://localhost:3001
-spicy -h localhost -p 3001
+/usr/bin/spicy -h localhost -p 3001
 ```
 Configure two USB redirection channel for spice.
 ```
@@ -309,6 +309,18 @@ cp /var/lib/libvirt/images/win11.comp.qcow2 /var/lib/libvirt/images/win11.qcow2
 ```
 Note: do not compress the end file.<br>
 
+## Here is a runtime example of my working:
+```
+/usr/sbin/smbd -l /tmp/qemu-smb.CMKW92 -s /tmp/qemu-smb.CMKW92/smb.conf
+/usr/bin/qemu-system-x86_64 -name tia20,debug-threads=on -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff -enable-kvm -m 16G -smp cpus=6,sockets=1,cores=3,threads=2 -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on -global kvm-pit.lost_tick_policy=delay -nodefaults -serial none -parallel none -no-user-config -boot strict=on -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd -object iothread,id=io1 -drive id=hd0,file=/home/boss/Desktop/Arbeit/KVM/tia20.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 -device virtio-tablet,wheel-axis=true -usb -device usb-ehci,id=ehci -device qemu-xhci,id=xhci -device usb-host,bus=ehci.0,vendorid=0x0bda,productid=0x8153 -rtc base=utc,clock=host,driftfix=slew -vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3005,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -device virtio-net,netdev=vmnic -netdev restrict=yes,type=user,id=vmnic,smb=/home/boss/Schreibtisch/Arbeit -monitor telnet::45458,server,nowait -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso -snapshot -d in_asm,cpu,mmu,guest_errors
+/usr/bin/spicy -h localhost -p 3005
+```
+and this:
+```
+/usr/sbin/smbd -l /tmp/qemu-smb.VG8U92 -s /tmp/qemu-smb.VG8U92/smb.conf
+/usr/bin/qemu-system-x86_64 -name office,debug-threads=on -cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff -enable-kvm -m 8G -smp cpus=6,sockets=1,cores=3,threads=2 -machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on -global kvm-pit.lost_tick_policy=delay -nodefaults -serial none -parallel none -no-user-config -boot strict=on -global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd -drive if=pflash,format=raw,file=/usr/share/OVMF/OVMF_VARS_4M.fd -object iothread,id=io1 -drive id=hd0,file=/home/boss/Desktop/Arbeit/KVM/office.qcow2,format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads -device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 -device virtio-tablet,wheel-axis=true -usb -device usb-ehci,id=ehci -device qemu-xhci,id=xhci -rtc base=utc,clock=host,driftfix=slew -vga qxl -device virtio-serial-pci -spice addr=127.0.0.1,port=3006,disable-ticketing=on -device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 -chardev spicevmc,id=spicechannel0,name=vdagent -device virtio-net,netdev=vmnic -netdev restrict=no,type=user,id=vmnic,smb=/home/boss/Schreibtisch/Arbeit -monitor telnet::45456,server,nowait -drive if=ide,index=0,media=cdrom,file=/var/lib/libvirt/images/virtio-win.iso -d in_asm,cpu,mmu,guest_errors
+/usr/bin/spicy -h localhost -p 3006
+```
 ## License
 This project is released under the WTFPL LICENSE.
 <a href="http://www.wtfpl.net/"><img src="http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png" width="80" height="15" alt="WTFPL" /></a>
