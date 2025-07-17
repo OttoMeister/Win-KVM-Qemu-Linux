@@ -4,7 +4,8 @@ Windows 11 on Linux using KVM and Qemu
 ## Preparacion:
 Installing all tools:
 ```bash
-sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86  virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd swtpm-tools swtpm
+sudo apt-get install  qemu-kvm  bridge-utils ovmf virt-manager samba qemu-utils qemu-system-x86 \
+virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd swtpm-tools swtpm
 sudo groupadd --system tpm
 sudo usermod -aG tpm user
 sudo chown -R root:tpm /var/lib/swtpm-localca
