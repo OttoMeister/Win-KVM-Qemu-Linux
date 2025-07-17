@@ -1,7 +1,7 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=$(mktemp)_{vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
+output_file=$(mktemp)_${vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
 
 user=$(/usr/bin/whoami)
 
@@ -125,6 +125,8 @@ ato "-monitor telnet::$vm_monitor_port,server,nowait \\"
 [ -f "$vm_cdrom_0" ] && ato "-drive if=ide,index=0,media=cdrom,file=${vm_cdrom_0} \\" 
 [ -f "$vm_cdrom_1" ] && ato "-drive if=ide,index=1,media=cdrom,file=${vm_cdrom_1} \\" 
 [ -f "$vm_cdrom_2" ] && ato "-drive if=ide,index=2,media=cdrom,file=${vm_cdrom_2} \\" 
+[ -f "$vm_cdrom_3" ] && ato "-drive if=ide,index=3,media=cdrom,file=${vm_cdrom_3} \\" 
+[ -f "$vm_cdrom_4" ] && ato "-drive if=ide,index=4,media=cdrom,file=${vm_cdrom_4} \\" 
 
 # No image will be overwritten. all changes stay only in memory
 [ "$vm_kiosk_mode" = yes ] && ato "-snapshot \\" 
@@ -138,7 +140,7 @@ ato "&"
 
 # SPICE client
 ato "sleep 2"
-ato "spicy -h localhost -p ${spice_port} &"
+ato "/usr/bin/spicy -h localhost -p ${spice_port} &"
 ato "PID=\$!" 
 ato "sleep 3" 
 ato "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')" 
@@ -175,7 +177,7 @@ echo "time nice ionice -c 3 7z a -mx=1 -mmt=on -p '${image_dir}/$(date +"%y%m%d"
 echo "# List images:"
 echo "ls -l '$image_dir' && find '$image_dir' | sort"
 echo "# Edit scripts:"
-echo "pluma '$HOME/kvm.sh' '$HOME/win11.sh' '$HOME/office.sh' '$HOME/tia19.sh' &"
+echo "pluma '$HOME/kvm.sh' '$HOME/win11.sh' '$HOME/office.sh' '$HOME/tia19.sh' '$HOME/tia20.sh' &"
 echo "# Cleanup:"
 echo "killall swtpm"
 echo "sudo service smbd restart"
