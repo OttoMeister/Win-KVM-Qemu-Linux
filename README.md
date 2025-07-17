@@ -9,14 +9,13 @@ sudo groupadd --system tpm
 sudo usermod -aG tpm user
 sudo chown -R root:tpm /var/lib/swtpm-localca
 sudo chmod -R 2770  /var/lib/swtpm-localca
-
 ```
 check if your system supports KVM:
 ```
 kvm-ok
 ```
 
-## Install Windows 11 on KVM
+## Install Windows 11 on KVM-Qemu Linux
 Download image from https://msdl.gravesoft.dev (Windows 11 23H2 v2 (Build 22631.2861), US English, IsoX64 Download)
 ```
 sudo mv ~/Downloads/Win11_23H2_English_x64v2.iso /var/lib/libvirt/images/win11.iso
@@ -111,7 +110,7 @@ https://github.com/massgravel/Microsoft-Activation-Scripts <br>
 https://github.com/es3n1n/no-defender <br>
 
 
-## Move from VMware to KVM
+## Move from VMware to KVM Linux
 Uninstall vmware utils using VMware <br>
 Disable Hibernate in Windows 10: <br>
 https://www.tenforums.com/tutorials/2859-enable-disable-hibernate-windows-10-a.html <br> 
@@ -132,7 +131,7 @@ sudo chmod a+w /var/lib/libvirt/images/Siemens_TIA19.qcow2
 ```
 In Windows after start qemu run D:\virtio-win-guest-tools.exe
 
-## Gereric Infos and Qemu parameters
+## Gereric Infos and Qemu Linux parameters
 
 #### Base parameters for Windows 11
 ```
