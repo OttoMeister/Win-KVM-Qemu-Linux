@@ -6,8 +6,7 @@
 # give it a name, suports win11, tia19 and office
 vm_name=tia20 # win11, tia19, tia20 or office
 vm_memory=16G # RAM 8G or 16G
-vm_smp=cpus=6,sockets=1,cores=3,threads=2 # "cpus=4,sockets=1,cores=2,threads=2" # or 
-spice_port=3005 # win11 = 3003, tia19 = 3004, tia20= 3005 or office = 3006
+vm_smp=cpus=6,sockets=1,cores=6,threads=1 # "cpus=4,sockets=1,cores=2,threads=2" # or 
 TSM=no # use yes or no
 uefi_ovmf=long # OVMF long or short or none
 vm_without_internet=yes # use yes or no
@@ -24,7 +23,8 @@ vm_audio=no # use pipewire or usbaudio or no
 vm_usb_network=yes # use yes or no
 vm_webcam=no # use yes or no
 vm_icon=~/${vm_name}.icon.png 
-vm_debug=yes # use yes or no
+vm_debug=no # use yes or no
+vm_viewer=remote-viewer # use remote-viewer
 
 # load second script - do not change
 . ~/kvm.sh

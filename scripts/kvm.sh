@@ -1,14 +1,12 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=$(mktemp --suffix=_${vm_name}) || { echo "Error: Failed to create temporary file."; exit 1; }
-
-
+output_file=$(mktemp)_{vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
 
 user=$(/usr/bin/whoami)
 
 # Define the image directory -
-image_dir="$HOME/Desktop/Arbeit/KVM"
+image_dir="$HOME/Desktop/KVM"
 disk_image="$image_dir/${vm_name}.qcow2"
 
 [ ! -d "$image_dir" ] && { echo "Error: Directory $image_dir does not exist."; exit 1; }
@@ -46,7 +44,7 @@ ato "-cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0
 ato "-enable-kvm \\" 
 ato "-m $vm_memory \\"
 ato "-smp $vm_smp \\"
-ato "-machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=on,acpi=on \\"
+ato "-machine q35,usb=off,vmport=off,smm=on,dump-guest-core=off,hpet=off,acpi=on \\"
 ato "-global kvm-pit.lost_tick_policy=delay \\"
 ato "-nodefaults -serial none -parallel none -no-user-config \\"
 ato "-boot strict=on \\"
@@ -66,14 +64,14 @@ ato "-global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\"
 
 # Attaches a virtual hard disk image using the VirtIO interface for efficient I/O.
 ato "-object iothread,id=io1 \\"
-ato "-drive id=hd0,file='$disk_image',format=qcow2,if=none,cache=writeback,discard=unmap,aio=threads \\"
-ato "-device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4 \\"
+ato "-drive id=hd0,file='$disk_image',format=qcow2,if=none,cache=none,discard=unmap,aio=io_uring,detect-zeroes=unmap \\"
+ato "-device virtio-blk-pci,drive=hd0,iothread=io1,write-cache=on,num-queues=4,queue-size=1024 \\"
 
 # Adds a virtual tablet device to capture mouse inputs smoothly.
 ato "-device virtio-tablet,wheel-axis=true \\"
 
 # enables USB support and adds a USB 2.0 EHCI and USB 3.0 XHCI controller in the VM.
-ato "-usb \\"
+# ato "-usb \\"
 ato "-device usb-ehci,id=ehci \\"
 ato "-device qemu-xhci,id=xhci \\"
 
@@ -95,10 +93,10 @@ ato "-device qemu-xhci,id=xhci \\"
 # Correct time synchronization and UTC as base time
 ato "-rtc base=utc,clock=host,driftfix=slew \\"
 
-# SPICE Support
-ato "-vga qxl \\"
+# old SPICE Support
+ato "-vga qxl -global qxl-vga.vgamem_mb=512 -global qxl-vga.ram_size=268435456 -global qxl-vga.vram_size=268435456  \\"
+ato "-spice unix=on,addr=/tmp/${vm_name}.socket,disable-ticketing=on \\"
 ato "-device virtio-serial-pci \\"
-ato "-spice addr=127.0.0.1,port=${spice_port},disable-ticketing=on \\"
 ato "-device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \\"
 ato "-chardev spicevmc,id=spicechannel0,name=vdagent \\"
 
@@ -140,21 +138,14 @@ ato "-monitor telnet::$vm_monitor_port,server,nowait \\"
 # The & at the end runs the QEMU process in the background.
 ato "&"  
 
-# SPICE client
-ato "sleep 2"
-ato "/usr/bin/spicy -h localhost -p ${spice_port} &"
-ato "PID=\$!" 
-ato "sleep 3" 
-ato "WINDOW_ID=\$(wmctrl -lp | grep \"\$PID\" | awk '{print \$1}')" 
-ato "if [ -n \"\$WINDOW_ID\" ]; then" 
-ato "  NEW_NAME=${vm_name}-${vm_name}-${vm_name}" 
-ato "  [ "$vm_kiosk_mode" = yes ]  && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" 
-ato "  wmctrl -i -r \"\$WINDOW_ID\" -T \"\$NEW_NAME\" || echo 'Warning: Failed to set window title.'" 
-ato "  wmctrl -i -r \"\$WINDOW_ID\" -e 0,100,100,1024,768 || echo 'Warning: Failed to resize window.'" 
-ato "  [ -f \"$vm_icon\" ] && /usr/local/bin/xseticon -id \"\$WINDOW_ID\" \"$vm_icon\" 2>/dev/null || echo 'Warning: Failed to set icon.'"
-ato "else" 
-ato "  echo 'Warning: Could not find SPICE window for PID \$PID.'" 
-ato "fi" 
+# SPICE client = remote-viewer 
+if [ "$vm_viewer" = remote-viewer ]; then 
+  ato "sleep 2"
+  ato "NEW_NAME=${vm_name}-${vm_name}-${vm_name}" 
+  ato "[ "$vm_kiosk_mode" = yes ] && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" 
+  ato remote-viewer spice+unix:///tmp/${vm_name}.socket  --title \"\$NEW_NAME\" --verbose --auto-resize=always --hotkeys=release-cursor=shift+f12 "&"  
+
+fi
 
 # Debug output
 if [ "$vm_debug" = "yes" ]; then
