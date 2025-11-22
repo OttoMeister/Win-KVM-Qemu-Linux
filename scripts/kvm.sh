@@ -1,7 +1,8 @@
 # Begin defining the command to launch the QEMU system emulator
 
 # Define the output file 
-output_file=$(mktemp)_{vm_name} || { echo "Error: Failed to create temporary file."; exit 1; }
+output_dir=$(mktemp --directory --suffix _${vm_name}) || { echo "Error: Failed to create temporary file."; exit 1; }
+output_file=${output_dir}/start.bash
 
 user=$(/usr/bin/whoami)
 
@@ -19,25 +20,25 @@ ato() { echo "$*" >> "$output_file"; }
 
 # TPM emulator
 if [ "$TSM" = yes ]; then 
-  ato "mkdir -p /tmp/emulated_tpm_${vm_name} &&"
+  ato "mkdir -p ${output_dir}/emulated_tpm &&"
   ato "/usr/bin/swtpm_setup \\"
-  ato "--tpmstate /tmp/emulated_tpm_${vm_name} \\" 
+  ato "--tpmstate ${output_dir}/emulated_tpm \\" 
   ato "--create-ek --create-platform-cert --lock-nvram   --overwrite &&"
   ato "/usr/bin/swtpm socket \\"
   ato "--log level=20 \\"
-  ato "--tpmstate dir=/tmp/emulated_tpm_${vm_name} \\"
+  ato "--tpmstate dir=${output_dir}/emulated_tpm \\"
   ato "--tpm2 \\"
-  ato "--ctrl type=unixio,path=/tmp/emulated_tpm_${vm_name}/swtpm-sock \\"
+  ato "--ctrl type=unixio,path=${output_dir}/emulated_tpm/swtpm-sock \\"
   ato "--daemon &&"
   ato "sleep 1"
-  ato "[[ -S /tmp/emulated_tpm_${vm_name}/swtpm-sock ]] || { echo "TPM socket not up"; exit 1; }"
+  ato "[[ -S ${output_dir}/emulated_tpm/swtpm-sock ]] || { echo "TPM socket not up"; exit 1; }"
 fi
 
 # Launches the QEMU virtual machine emulator with specific options and configurations.
 ato "/usr/bin/qemu-system-x86_64 \\"
 
 # Setting a name for the QEMU VM
-ato "-name $vm_name,debug-threads=on \\"
+ato "-name ${vm_name},debug-threads=on \\"
 
 # Hardware config
 ato "-cpu host,migratable=on,hv-time=on,hv-relaxed=on,hv-vapic=on,hv-spinlocks=0x1fff \\"
@@ -58,7 +59,7 @@ ato "-global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\"
 
 # TPM emulator   # Defines a character device for the TPM, connected via the socket created earlier (swtpm-sock)
 [ "$TSM" = yes ] && ato "-tpmdev emulator,id=tpm0,chardev=chrtpm \\"
-[ "$TSM" = yes ] && ato "-chardev socket,id=chrtpm,path=/tmp/emulated_tpm_${vm_name}/swtpm-sock \\"
+[ "$TSM" = yes ] && ato "-chardev socket,id=chrtpm,path=${output_dir}/emulated_tpm/swtpm-sock \\"
 [ "$TSM" = yes ] && ato "-device tpm-tis,tpmdev=tpm0 \\"
 [ "$TSM" = yes ] && ato "-global driver=cfi.pflash01,property=secure,value=on \\"
 
@@ -95,7 +96,7 @@ ato "-rtc base=utc,clock=host,driftfix=slew \\"
 
 # old SPICE Support
 ato "-vga qxl -global qxl-vga.vgamem_mb=512 -global qxl-vga.ram_size=268435456 -global qxl-vga.vram_size=268435456  \\"
-ato "-spice unix=on,addr=/tmp/${vm_name}.socket,disable-ticketing=on \\"
+ato "-spice unix=on,addr=${output_dir}/spice.socket,disable-ticketing=on \\"
 ato "-device virtio-serial-pci \\"
 ato "-device virtserialport,chardev=spicechannel0,name=com.redhat.spice.0 \\"
 ato "-chardev spicevmc,id=spicechannel0,name=vdagent \\"
@@ -143,20 +144,18 @@ if [ "$vm_viewer" = remote-viewer ]; then
   ato "sleep 2"
   ato "NEW_NAME=${vm_name}-${vm_name}-${vm_name}" 
   ato "[ "$vm_kiosk_mode" = yes ] && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" 
-  ato remote-viewer spice+unix:///tmp/${vm_name}.socket  --title \"\$NEW_NAME\" --verbose --auto-resize=always --hotkeys=release-cursor=shift+f12 "&"  
+  ato remote-viewer spice+unix://${output_dir}/spice.socket  --title \"\$NEW_NAME\" --verbose --auto-resize=always --hotkeys=release-cursor=shift+f12 "&"  
 
 fi
 
 # Debug output
 if [ "$vm_debug" = "yes" ]; then
-  echo "Generated ${output_file} QEMU command:"
+  echo "Generated ${output_file}\nQEMU command:"
   cat "$output_file"
 fi
 
-# Run and cleanup
-if bash "$output_file"; then echo rm "$output_file"
-else echo "Error: Failed to execute QEMU command. See debug output above if enabled."; exit 1; 
-fi
+# Run script
+bash "$output_file"; 
 
 ### Informational Messages ###
 echo "+++++++++++++++ Info +++++++++++++++"
