@@ -8,8 +8,12 @@ sudo apt-get install qemu-kvm bridge-utils ovmf virt-manager samba qemu-utils qe
 virt-viewer spice-client-gtk libvirt-daemon-system nfs-kernel-server virtiofsd swtpm-tools swtpm
 sudo groupadd --system tpm
 sudo usermod -aG tpm user
-sudo chown -R root:tpm /var/lib/swtpm-localca
-sudo chmod -R 2770 /var/lib/swtpm-localca
+sudo mkdir -p /var/lib/swtpm-localca
+sudo chown user:user /var/lib/swtpm-localca
+sudo chmod 755 /var/lib/swtpm-localca
+sudo chmod a+w /usr/share/OVMF/OVMF_VARS_4M.fd
+sudo chmod a+w /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
+sudo chmod a+x /usr/share/OVMF
 ```
 check if your system supports KVM:
 ```bash
