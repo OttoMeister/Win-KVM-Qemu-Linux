@@ -1,7 +1,9 @@
 # Begin defining the command to launch the QEMU system emulator
 
-# Define the output file 
+# Define the output dir. Fox or flexible
+# mkdir output_dir=/tmp/tmp.${vm_name} &&  Connection to 192.168.90.121 closed by remote host.iled to create temporary file."; exit 1; }
 output_dir=$(mktemp --directory --suffix _${vm_name}) || { echo "Error: Failed to create temporary file."; exit 1; }
+# Define the output file
 output_file=${output_dir}/start.bash
 
 user=$(/usr/bin/whoami)
