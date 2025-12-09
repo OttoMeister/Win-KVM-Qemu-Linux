@@ -1,21 +1,40 @@
 # Begin defining the command to launch the QEMU system emulator
 
-# Define the output dir. Fox or flexible
-# mkdir output_dir=/tmp/tmp.${vm_name} &&  Connection to 192.168.90.121 closed by remote host.iled to create temporary file."; exit 1; }
+# test if qemu is already running
+PID=$(pgrep -f "qemu-system-x86_64.*${vm_name}" | head -n1)
+if [ -n "$PID" ]; then
+  echo "QEMU ${vm_name} is already running with PID: $PID"
+  echo "Trying to powerdown system.."
+  echo "system_powerdown" | nc -w 1 localhost $vm_monitor_port >/dev/null 2>&1
+  i=0
+  while [ $i -lt 20 ]; do  # wait up to 20s
+    if ! pgrep -f "qemu-system-x86_64.*${vm_name}" > /dev/null; then
+       echo "System shutdown successfully"
+       exit 0  
+    fi
+    sleep 1
+    i=$((i + 1))
+  done
+  echo "System did not shutdown in time, still running with PID: $PID"
+  echo "Try to kill it manually with: kill $PID"
+  exit 1
+fi
+
+# Define the output file 
 output_dir=$(mktemp --directory --suffix _${vm_name}) || { echo "Error: Failed to create temporary file."; exit 1; }
-# Define the output file
+mkdir -p ${output_dir}
 output_file=${output_dir}/start.bash
+rm $output_file
 
 user=$(/usr/bin/whoami)
 
-# Define the image directory -
+# Define the image directory 
 image_dir="$HOME/Desktop/KVM"
 disk_image="$image_dir/${vm_name}.qcow2"
 
 [ ! -d "$image_dir" ] && { echo "Error: Directory $image_dir does not exist."; exit 1; }
 [ ! -w "$image_dir" ] && { echo "Error: No write permission for $image_dir."; exit 1; }
 [ ! -f "$disk_image" ] && { echo "Error: Disk image $disk_image not found."; exit 1; }
-[ ! -f "$vm_icon" ] && { echo "Warning: Icon $vm_icon not found."; vm_icon=""; }
 
 # append to output
 ato() { echo "$*" >> "$output_file"; }
@@ -52,7 +71,6 @@ ato "-global kvm-pit.lost_tick_policy=delay \\"
 ato "-nodefaults -serial none -parallel none -no-user-config \\"
 ato "-boot strict=on \\"
 ato "-global ICH9-LPC.disable_s3=1 -global ICH9-LPC.disable_s4=1 \\"
-
 
 # Adds UEFI firmware files to support secure boot.
 [ "$uefi_ovmf" = short ] && ato "-bios /usr/share/ovmf/OVMF.fd \\" 
