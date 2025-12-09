@@ -35,6 +35,7 @@ disk_image="$image_dir/${vm_name}.qcow2"
 [ ! -d "$image_dir" ] && { echo "Error: Directory $image_dir does not exist."; exit 1; }
 [ ! -w "$image_dir" ] && { echo "Error: No write permission for $image_dir."; exit 1; }
 [ ! -f "$disk_image" ] && { echo "Error: Disk image $disk_image not found."; exit 1; }
+[ -d "$vm_smb_drive" ] || echo "Warnung: SMB-Verzeichnis $vm_smb_drive existiert nicht"
 
 # append to output
 ato() { echo "$*" >> "$output_file"; }
@@ -163,14 +164,13 @@ ato "&"
 if [ "$vm_viewer" = remote-viewer ]; then 
   ato "sleep 2"
   ato "NEW_NAME=${vm_name}-${vm_name}-${vm_name}" 
-  ato "[ "$vm_kiosk_mode" = yes ] && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" 
+  ato "[ $vm_kiosk_mode = yes ] && NEW_NAME=${vm_name}-Kiosk_Mode-${vm_name}" 
   ato remote-viewer spice+unix://${output_dir}/spice.socket  --title \"\$NEW_NAME\" --verbose --auto-resize=always --hotkeys=release-cursor=shift+f12 "&"  
-
 fi
 
 # Debug output
 if [ "$vm_debug" = "yes" ]; then
-  echo "Generated ${output_file}\nQEMU command:"
+  echo "Generated ${output_file} QEMU command:"
   cat "$output_file"
 fi
 
